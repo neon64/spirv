@@ -2,7 +2,6 @@ use instruction::{InstructionHeader, Instruction};
 use spirv::*;
 use std::mem;
 use std::slice;
-use std::io;
 
 const SPIRV_MAGIC: u32 = 0x07230203;
 const SPIRV_MAGIC_REV: u32 = 0x03022307;
