@@ -1,5 +1,3 @@
-#![feature(braced_empty_structs)]
-
 mod instruction;
 mod module;
 mod spirv;
@@ -15,6 +13,6 @@ fn main() {
     let mut module = Module::from_raw(&bytes).unwrap();
     let iterator = module.instructions();
     while let Some(instruction) = iterator.next() {
-        println!("{:?}", instruction.unwrap());
+        //println!("{:?}", instruction.unwrap());
     }
 }
