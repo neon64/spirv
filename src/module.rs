@@ -1,4 +1,5 @@
-use instruction::{InstructionHeader, Instruction};
+use instruction::InstructionHeader;
+use instruction::data::Instruction;
 use spirv::*;
 use std::mem;
 use std::slice;
@@ -124,7 +125,6 @@ impl<'a> InstructionIterator<'a> {
 
 impl<'a> Module<'a> {
     pub fn from_raw(bytes: &'a Vec<u8>) -> Result<Self, SpirvError> {
-        println!("{:?}", "hi");
         // convert the vector of bytes into a vector of words
         let words: &mut [u32] = unsafe { slice::from_raw_parts_mut(bytes.as_ptr() as *mut u32, bytes.len() / 4) };
 
@@ -135,10 +135,6 @@ impl<'a> Module<'a> {
         if words.len() < header_size {
             return Err(SpirvError::NoHeader);
         }
-
-        println!("awesome");
-
-        println!("{}", words[0]);
 
         let header = unsafe { &*(&words[0] as *const u32 as *const ModuleHeader) };
         println!("Header: {:?}", header);
@@ -159,19 +155,12 @@ impl<'a> Module<'a> {
             return Err(SpirvError::UnsupportedVersion(header.version));
         }
 
-        let mut instruction_iterator = InstructionIterator {
-            words: words,
-            index: index
-        };
-
-        /*let mut i = instruction_iterator;
-        while let Some(cool) = i.next() {
-            println!("{:?}", cool.unwrap());
-        }*/
-
         Ok(Module {
             header: header,
-            instruction_iterator: instruction_iterator
+            instruction_iterator: InstructionIterator {
+                words: words,
+                index: index
+            }
         })
     }
 

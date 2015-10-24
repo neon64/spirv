@@ -1,9 +1,6 @@
 use spirv::Op;
 
-mod data;
-mod enumerate;
-pub use self::enumerate::Instruction;
-pub use self::data::*;
+pub mod data;
 
 // Header of all instructions, contains the opcode identifier and the size of the instruction
 #[derive(Debug)]

@@ -6,7 +6,6 @@ use std::fs::File;
 use module::Module;
 
 fn main() {
-    println!("{:?}", "hi");
     let mut file = File::open("src/test_shader.spv").unwrap();
     let mut bytes = Vec::new();
     file.read_to_end(&mut bytes).unwrap();
