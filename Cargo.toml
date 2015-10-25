@@ -2,3 +2,7 @@
 name = "spirv"
 version = "0.1.0"
 authors = ["Chris Chamberlain <c.chamberlain@iinet.net.au>"]
+license = "MIT"
+
+[dependencies]
+libc = "*"

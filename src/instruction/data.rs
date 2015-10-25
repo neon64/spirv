@@ -619,21 +619,26 @@ instruction! { OpSourceExtension, 1, 65535,
     extension: LiteralString
 }
 
-instruction! { OpName, 2, 65535,
 // Name a Result <id>.
 // This has no semantic impact and can safely be removed from a module
-    target: Id,             // The Result <id> to name. It can be the Result <id> of any instruction: other,
-                                            // a variable, function, type, intermediate result, etc.
-    name: LiteralString               // The string to name <id> with.
+instruction! { OpName, 2, 65535,
+    // The Result <id> to name. It can be the Result <id> of any instruction: other,
+    // a variable, function, type, intermediate result, etc.
+    target: Id,
+    // The string to name <id> with.
+    name: LiteralString
 }
 
 // Name a member of a structure type.
 // This has no semantic impact and can safely be removed from a module.
 instruction! { OpMemberName, 3, 65535,
-    ty: Id,               // The <id> from an OpTypeStruct instruction.
-    member: LiteralNumber,             // The number of the member to name in the structure.
-                                            // The first member is member 0, the next is member 1, ...
-    name: LiteralString               // The string to name the member with.
+    // The <id> from an OpTypeStruct instruction.
+    ty: Id,
+    // The number of the member to name in the structure.
+    // The first member is member 0, the next is member 1, ...
+    member: LiteralNumber,
+    // The string to name the member with.
+    name: LiteralString
 }
 
 instruction! { OpString, 2, 65535,

@@ -59,21 +59,19 @@ pub enum SpirvError {
     UnsupportedVersion(u32)
 }
 
-struct InstructionIterator<'a> {
+pub struct InstructionIterator<'a> {
     words: &'a [u32],
     index: usize
 }
 
-impl<'a> InstructionIterator<'a> {
-    pub fn next(&mut self) -> Option<Result<Instruction<'a>, SpirvError>> {
+impl<'a> Iterator for InstructionIterator<'a> {
+    type Item = Result<Instruction<'a>, SpirvError>;
+    fn next(&mut self) -> Option<Result<Instruction<'a>, SpirvError>> {
         let opcode_and_word_count = match self.words.get(self.index) { Some(w) => w, None => return None }; // get instruction header
-        //println!("{} => Raw Opcode and Word Count: {:#x}", self.index, opcode_and_word_count);
         let instruction_header = InstructionHeader {
             word_count: (*opcode_and_word_count >> 16) as u16,
             opcode: unsafe { mem::transmute(*opcode_and_word_count as u16) }
         };
-        /*println!("{} => Opcode No: {}", self.index, *opcode_and_word_count as u16);
-        println!("{} => Header: {:?}", self.index, instruction_header);*/
 
         // check for malformed header
         if instruction_header.word_count == 0 {
@@ -84,7 +82,6 @@ impl<'a> InstructionIterator<'a> {
 
         let instruction = {
             let body_ptr = match self.words.get(self.index + 1) { Some(w) => w, None => return None } as *const _; // get the start of the instruction body
-            //println!("    Start: {}", unsafe { *body_ptr });
             unsafe { Instruction::from_opcode_and_ptr(instruction_header.opcode, body_ptr) }
         };
         self.index += instruction_header.word_count as usize;
@@ -93,38 +90,8 @@ impl<'a> InstructionIterator<'a> {
     }
 }
 
-/*impl<'a> Iterator for InstructionIterator<'a> {
-    type Item = Result<Instruction<'a>, SpirvError>;
-    fn next(&mut self) -> Option<Self::Item> {
-        let opcode_and_word_count = match self.words.get(self.index) { Some(w) => w, None => return None }; // get instruction header
-        println!("{} => Raw Opcode and Word Count: {:#x}", self.index, opcode_and_word_count);
-        let instruction_header = InstructionHeader {
-            word_count: (*opcode_and_word_count >> 16) as u16,
-            opcode: unsafe { mem::transmute(*opcode_and_word_count as u16) }
-        };
-        println!("{} => Opcode No: {}", self.index, *opcode_and_word_count as u16);
-        println!("{} => Header: {:?}", self.index, instruction_header);
-
-        // check for malformed header
-        if instruction_header.word_count == 0 {
-            return Some(Err(SpirvError::WordCountIsZero));
-        } else if instruction_header.opcode as u16 >= Op::OpLastValue as u16 {
-            return Some(Err(SpirvError::InvalidOpcode));
-        }
-
-        let instruction = {
-            let body_ptr = match self.words.get(self.index + 1) { Some(w) => w, None => return None } as *const _; // get the start of the instruction body
-            println!("    Start: {}", unsafe { *body_ptr });
-            unsafe { Instruction::from_opcode_and_ptr(instruction_header.opcode, body_ptr) }
-        };
-        self.index += instruction_header.word_count as usize;
-
-        Some(Ok(instruction))
-    }
-}*/
-
 impl<'a> Module<'a> {
-    pub fn from_raw(bytes: &'a Vec<u8>) -> Result<Self, SpirvError> {
+    pub fn from_bytes(bytes: &'a Vec<u8>) -> Result<Self, SpirvError> {
         // convert the vector of bytes into a vector of words
         let words: &mut [u32] = unsafe { slice::from_raw_parts_mut(bytes.as_ptr() as *mut u32, bytes.len() / 4) };
 
