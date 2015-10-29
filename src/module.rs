@@ -1,6 +1,6 @@
-use instruction::InstructionHeader;
+use instruction::{InstructionHeader, InstructionWrapper};
 use instruction::data::Instruction;
-use spirv::*;
+use enumerations::*;
 use std::mem;
 use std::slice;
 
@@ -14,40 +14,18 @@ fn bswap_32(x: u32) -> u32 {
 }
 
 #[derive(Debug)]
-struct ModuleHeader {
-    magic: u32,
-    version: u32,
-    generator: u32,
-    bound: u32,
-    reserved: u32
+pub struct ModuleHeader {
+    pub magic: u32,
+    pub version: u32,
+    pub generator: u32,
+    pub bound: u32,
+    pub reserved: u32
 }
 
 pub struct Module<'a> {
-    header: &'a ModuleHeader,
-    instruction_iterator: InstructionIterator<'a>
-    /*start: *const InstructionHeader,
-    end: *const InstructionHeader,*/
-
-    // The module layout
-    //source: Option<OpSourceStruct>                 // optional / single
-    /*OP_STRUCT(OpSourceExtension) const* sourceExtensions;       // optional / multiple
-    OP_STRUCT(OpCompileFlag) const*     compileFlags;           // optional / multiple
-    OP_STRUCT(OpExtension) const*       extensions;             // optional / multiple
-    OP_STRUCT(OpExtInstImport) const*   extInstImport;          // optional / multiple
-    OP_STRUCT(OpMemoryModel) const*     memoryModel;            // required / single
-    OP_STRUCT(OpEntryPoint) const*      entryPoints;            // required / multiple
-    OP_STRUCT(OpExecutionMode) const*   executionModes;         // required / multiple
-
-    // all debug and annotation instructions
-    OP_STRUCT(OpString) const*          strings;                // all string declarations,     optional / multiple
-    InstructionHeader const*            names;                  // all name declarations,       optional / multiple
-    OP_STRUCT(OpLine) const*            lines;                  // all line declarations,       optional / multiple
-    InstructionHeader const*            decorations;            // all decoration declarations, optional / multiple
-
-    // all type declaration / all constant instructions
-    InstructionHeader const*            declarations;
-    OP_STRUCT(OpFunction) const*        functionDeclarations;   // optional / multiple
-    OP_STRUCT(OpFunction) const*        functionDefinitions;    // required / multiple*/
+    pub header: &'a ModuleHeader,
+    words: &'a [u32],
+    start_index: usize
 }
 
 #[derive(Debug)]
@@ -65,8 +43,8 @@ pub struct InstructionIterator<'a> {
 }
 
 impl<'a> Iterator for InstructionIterator<'a> {
-    type Item = Result<Instruction<'a>, SpirvError>;
-    fn next(&mut self) -> Option<Result<Instruction<'a>, SpirvError>> {
+    type Item = Result<InstructionWrapper<'a>, SpirvError>;
+    fn next(&mut self) -> Option<Result<InstructionWrapper<'a>, SpirvError>> {
         let opcode_and_word_count = match self.words.get(self.index) { Some(w) => w, None => return None }; // get instruction header
         let instruction_header = InstructionHeader {
             word_count: (*opcode_and_word_count >> 16) as u16,
@@ -81,12 +59,16 @@ impl<'a> Iterator for InstructionIterator<'a> {
         }
 
         let instruction = {
-            let body_ptr = match self.words.get(self.index + 1) { Some(w) => w, None => return None } as *const _; // get the start of the instruction body
+            let body_ptr = match self.words.get(self.index + 1) { Some(w) => w, None => opcode_and_word_count } as *const _; // get the start of the instruction body
             unsafe { Instruction::from_opcode_and_ptr(instruction_header.opcode, body_ptr) }
         };
+
         self.index += instruction_header.word_count as usize;
 
-        Some(Ok(instruction))
+        Some(Ok(InstructionWrapper {
+            header: instruction_header,
+            node: instruction
+        }))
     }
 }
 
@@ -104,12 +86,10 @@ impl<'a> Module<'a> {
         }
 
         let header = unsafe { &*(&words[0] as *const u32 as *const ModuleHeader) };
-        println!("Header: {:?}", header);
         index += header_size;
 
         // perform byte swapping
         if header.magic == SPIRV_MAGIC_REV {
-            println!("swapping bytes");
             for word in words.iter_mut() {
                 *word = bswap_32(*word);
             }
@@ -124,14 +104,15 @@ impl<'a> Module<'a> {
 
         Ok(Module {
             header: header,
-            instruction_iterator: InstructionIterator {
-                words: words,
-                index: index
-            }
+            words: words,
+            start_index: index
         })
     }
 
-    pub fn instructions(&mut self) -> &mut InstructionIterator<'a> {
-        &mut self.instruction_iterator
+    pub fn instructions(&self) -> InstructionIterator<'a> {
+        InstructionIterator {
+            words: self.words,
+            index: self.start_index
+        }
     }
 }

@@ -11,13 +11,13 @@ pub enum SourceLanguage {
 #[derive(Debug)]
 #[repr(u32)]
 pub enum ExecutionModel {
-    ExecutionModelVertex = 0,
-    ExecutionModelTessellationControl = 1,
-    ExecutionModelTessellationEvaluation = 2,
-    ExecutionModelGeometry = 3,
-    ExecutionModelFragment = 4,
-    ExecutionModelGLCompute = 5,
-    ExecutionModelKernel = 6,
+    Vertex = 0,
+    TessellationControl = 1,
+    TessellationEvaluation = 2,
+    Geometry = 3,
+    Fragment = 4,
+    GLCompute = 5,
+    Kernel = 6,
 }
 
 #[derive(Debug)]
@@ -38,53 +38,53 @@ pub enum MemoryModel {
 
 #[derive(Debug)]
 pub enum ExecutionMode {
-    ExecutionModeInvocations = 0,
-    ExecutionModeSpacingEqual = 1,
-    ExecutionModeSpacingFractionalEven = 2,
-    ExecutionModeSpacingFractionalOdd = 3,
-    ExecutionModeVertexOrderCw = 4,
-    ExecutionModeVertexOrderCcw = 5,
-    ExecutionModePixelCenterInteger = 6,
-    ExecutionModeOriginUpperLeft = 7,
-    ExecutionModeOriginLowerLeft = 8,
-    ExecutionModeEarlyFragmentTests = 9,
-    ExecutionModePointMode = 10,
-    ExecutionModeXfb = 11,
-    ExecutionModeDepthReplacing = 12,
-    ExecutionModeDepthAny = 13,
-    ExecutionModeDepthGreater = 14,
-    ExecutionModeDepthLess = 15,
-    ExecutionModeDepthUnchanged = 16,
-    ExecutionModeLocalSize = 17,
-    ExecutionModeLocalSizeHint = 18,
-    ExecutionModeInputPoints = 19,
-    ExecutionModeInputLines = 20,
-    ExecutionModeInputLinesAdjacency = 21,
-    ExecutionModeInputTriangles = 22,
-    ExecutionModeInputTrianglesAdjacency = 23,
-    ExecutionModeInputQuads = 24,
-    ExecutionModeInputIsolines = 25,
-    ExecutionModeOutputVertices = 26,
-    ExecutionModeOutputPoints = 27,
-    ExecutionModeOutputLineStrip = 28,
-    ExecutionModeOutputTriangleStrip = 29,
-    ExecutionModeVecTypeHint = 30,
-    ExecutionModeContractionOff = 31,
+    Invocations = 0,
+    SpacingEqual = 1,
+    SpacingFractionalEven = 2,
+    SpacingFractionalOdd = 3,
+    VertexOrderCw = 4,
+    VertexOrderCcw = 5,
+    PixelCenterInteger = 6,
+    OriginUpperLeft = 7,
+    OriginLowerLeft = 8,
+    EarlyFragmentTests = 9,
+    PointMode = 10,
+    Xfb = 11,
+    DepthReplacing = 12,
+    DepthAny = 13,
+    DepthGreater = 14,
+    DepthLess = 15,
+    DepthUnchanged = 16,
+    LocalSize = 17,
+    LocalSizeHint = 18,
+    InputPoints = 19,
+    InputLines = 20,
+    InputLinesAdjacency = 21,
+    InputTriangles = 22,
+    InputTrianglesAdjacency = 23,
+    InputQuads = 24,
+    InputIsolines = 25,
+    OutputVertices = 26,
+    OutputPoints = 27,
+    OutputLineStrip = 28,
+    OutputTriangleStrip = 29,
+    VecTypeHint = 30,
+    ContractionOff = 31,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone, Eq, PartialEq)]
 pub enum StorageClass {
-    StorageClassUniformConstant = 0,
-    StorageClassInput = 1,
-    StorageClassUniform = 2,
-    StorageClassOutput = 3,
-    StorageClassWorkgroupLocal = 4,
-    StorageClassWorkgroupGlobal = 5,
-    StorageClassPrivateGlobal = 6,
-    StorageClassFunction = 7,
-    StorageClassGeneric = 8,
-    StorageClassAtomicCounter = 10,
-    StorageClassImage = 11,
+    UniformConstant = 0,
+    Input = 1,
+    Uniform = 2,
+    Output = 3,
+    WorkgroupLocal = 4,
+    WorkgroupGlobal = 5,
+    PrivateGlobal = 6,
+    Function = 7,
+    Generic = 8,
+    AtomicCounter = 10,
+    Image = 11,
 }
 
 #[derive(Debug)]
@@ -113,6 +113,7 @@ pub enum SamplerFilterMode {
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum ImageFormat {
     ImageFormatUnknown = 0,
     ImageFormatRgba32f = 1,
@@ -157,6 +158,7 @@ pub enum ImageFormat {
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum ImageChannelOrder {
     ImageChannelOrderR = 0,
     ImageChannelOrderA = 1,
@@ -180,6 +182,7 @@ pub enum ImageChannelOrder {
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum ImageChannelDataType {
     ImageChannelDataTypeSnormInt8 = 0,
     ImageChannelDataTypeSnormInt16 = 1,
@@ -200,6 +203,7 @@ pub enum ImageChannelDataType {
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum ImageOperandsShift {
     ImageOperandsBiasShift = 0,
     ImageOperandsLodShift = 1,
@@ -250,12 +254,14 @@ pub enum FPRoundingMode {
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum LinkageType {
     LinkageTypeExport = 0,
     LinkageTypeImport = 1,
 }
 
 #[derive(Debug)]
+#[repr(u32)]
 pub enum AccessQualifier {
     AccessQualifierReadOnly = 0,
     AccessQualifierWriteOnly = 1,

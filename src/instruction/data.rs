@@ -1,7 +1,7 @@
 #![allow(non_snake_case)]
 
-use instruction::{Id, LiteralNumber, LiteralString};
-use spirv::*;
+use instruction::{Id, LiteralNumber, LiteralString, UnsizedArray};
+use enumerations::*;
 
 macro_rules! instruction {
     ($struct_name:ident, $min_word_count:expr, $max_word_count:expr) => (
@@ -74,6 +74,7 @@ pub enum Instruction<'a> {
     TypeStruct(&'a OpTypeStruct),
     TypeOpaque(&'a OpTypeOpaque),
     TypePointer(&'a OpTypePointer),
+    TypeImage(&'a OpTypeImage),
     TypeFunction(&'a OpTypeFunction),
     TypeEvent(&'a OpTypeEvent),
     TypeDeviceEvent(&'a OpTypeDeviceEvent),
@@ -346,6 +347,7 @@ impl<'a> Instruction<'a> {
             Op::OpTypeStruct => Instruction::TypeStruct(&*(ptr as *const _)),
             Op::OpTypeOpaque => Instruction::TypeOpaque(&*(ptr as *const _)),
             Op::OpTypePointer => Instruction::TypePointer(&*(ptr as *const _)),
+            //Op::OpTypeImage => Instruction::TypeImage(&*(ptr as *const _)),
             Op::OpTypeFunction => Instruction::TypeFunction(&*(ptr as *const _)),
             Op::OpTypeEvent => Instruction::TypeEvent(&*(ptr as *const _)),
             Op::OpTypeDeviceEvent => Instruction::TypeDeviceEvent(&*(ptr as *const _)),
@@ -757,11 +759,11 @@ instruction! { OpEntryPoint, 3, 3,
     result: Id            // The Result <id> of an OpFunction instruction.
 }
 
-instruction! { OpExecutionMode, 3, 65535,
 // Declare an execution mode for an entry point.
-    entryPoint: Id,         // Must be the Entry Point <id> operand of an OpEntryPoint instruction.
+instruction! { OpExecutionMode, 3, 65535,
+    entry_point: Id,         // Must be the Entry Point <id> operand of an OpEntryPoint instruction.
     mode: ExecutionMode,               // The execution mode. See Execution Mode.
-    literals: [LiteralNumber; 1]
+    literals: UnsizedArray<LiteralNumber>
 }
 
 instruction! { OpCompileFlag, 1, 65535,
@@ -894,6 +896,19 @@ instruction_base! { OpTypePointer, 4, 4,
     ty: Id              // The type of the object pointed to.
 }
 
+// Declare a new image type.
+instruction_base! { OpTypeImage, 9, 10,
+
+    sampled_type: Id,
+    dimension: Dim,
+    depth: LiteralNumber,
+    arrayed: LiteralNumber,
+    multisample: LiteralNumber,
+    sampled: LiteralNumber,
+    image_format: ImageFormat,
+    access_qualifier: AccessQualifier
+}
+
 instruction_base! { OpTypeFunction, 3, 65535,
 // Declare a new function type. OpFunction and OpFunctionDecl,
 // will use this to declare the return type and parameter types
@@ -951,7 +966,7 @@ instruction! { OpConstant, 3, 65535,
 // Declare a new Integer-type or Floating-point-type scalar constant.
     result_type: Id,         // Must be a scalar Integer type or Floating-point type.
     result: Id,
-    value: [LiteralNumber; 1]           // The bit pattern for the constant.
+    value: LiteralNumber           // The bit pattern for the constant.
                                             // Types 32 bits wide or smaller take one word.
                                             // Larger types take multiple words,
                                             // with low-order words appearing first.
@@ -972,7 +987,7 @@ instruction! { OpConstantComposite, 3, 65535,
     // Must appear in the order needed by the definition of
     // the type of the result. The Constituents must be
     // the <id> of other constant declarations.
-    constituents: [Id; 1]
+    constituents: UnsizedArray<Id>
 }
 
 // Declare a new sampler constant.
@@ -1691,10 +1706,11 @@ instruction! { OpTextureFetchTexelLod, 6, 6,
                                             // used when sampling.
 }
 
-instruction! { OpTextureFetchTexelOffset, 6, 6,
 // Fetch a single offset texel from a texture.
 //
 // Capability: Shader
+instruction! { OpTextureFetchTexelOffset, 6, 6,
+
     result_type: Id,         // Must be a vector of four components of the same
                                             // type as Sampled Type of Sampler's type.
     result: Id,
@@ -1717,10 +1733,10 @@ instruction! { OpTextureFetchTexelOffset, 6, 6,
                                             // minus the array layer component, if present.
 }
 
-instruction! { OpTextureFetchSample, 6, 6,
 // Fetch a single sample from a multi-sample texture.
 //
 // Capability: Shader
+instruction! { OpTextureFetchSample, 6, 6,
     result_type: Id,         // Must be a vector of four components of the same
                                             // type as Sampled Type of Sampler's type.
     result: Id,
@@ -1734,10 +1750,10 @@ instruction! { OpTextureFetchSample, 6, 6,
     sample: Id            // The sample number of the sample to return.
 }
 
-instruction! { OpTextureFetchTexel, 5, 5,
 // Fetch an element out of a buffer texture.
 //
 // Capability: Shader
+instruction! { OpTextureFetchTexel, 5, 5,
     result_type: Id,         // Must be a vector of four components of the same
                                             // type as Sampled Type of Sampler's type.
     result: Id,
@@ -2255,11 +2271,9 @@ instruction! { OpVectorShuffle, 5, 65535,
                                             // to one less than the total number of components. These two vectors must be of the same component type, but do not have
                                             // to have the same number of components.
 
-    components: [LiteralNumber; 1]      // Components are these logical numbers (see above), selecting which of the logically numbered components form the result.
+    components: UnsizedArray<LiteralNumber>      // Components are these logical numbers (see above), selecting which of the logically numbered components form the result.
                                             // They can select the components in any order and can repeat components. The first component of the result is selected by
                                             // the first Component operand, the second component of the result is selected by the second Component operand, etc.
-
-
 }
 
 instruction! { OpCompositeConstruct, 3, 65535,
@@ -2276,12 +2290,15 @@ instruction! { OpCompositeConstruct, 3, 65535,
                                             // the result. When constructing a vector, there must be at least two Constituent operands.
 }
 
-instruction! { OpCompositeExtract, 4, 65535,
 // Extract a part of a composite object.
-    result_type: Id,         // Must be the type of object selected by the last provided index. The instruction result is the extracted object.
+instruction! { OpCompositeExtract, 4, 65535,
+    // Must be the type of object selected by the last provided index. The instruction result is the extracted object.
+    result_type: Id,
     result: Id,
-    composite: Id,          // Composite in the composite to extract from.
-    indexes: [LiteralNumber; 1]         // Indexes walk the type hierarchy, down to component granularity. All indexes must be in bounds.
+    // Composite in the composite to extract from.
+    composite: Id,
+    // Indexes walk the type hierarchy, down to component granularity. All indexes must be in bounds.
+    indexes: UnsizedArray<LiteralNumber>
 }
 
 instruction! { OpCompositeInsert, 5, 65535,

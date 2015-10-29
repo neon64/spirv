@@ -3,6 +3,8 @@ name = "spirv"
 version = "0.1.0"
 authors = ["Chris Chamberlain <c.chamberlain@iinet.net.au>"]
 license = "MIT"
+description = "SPIR-V parser"
+repository = "https://github.com/neon64/spirv"
 
 [dependencies]
 libc = "*"
