@@ -49,6 +49,7 @@ pub enum Instruction<'a> {
     MemberName(&'a OpMemberName),
     String(&'a OpString),
     Line(&'a OpLine),
+    Capability(&'a OpCapability),
     DecorationGroup(&'a OpDecorationGroup),
     Decorate(&'a OpDecorate),
     MemberDecorate(&'a OpMemberDecorate),
@@ -60,7 +61,6 @@ pub enum Instruction<'a> {
     MemoryModel(&'a OpMemoryModel),
     EntryPoint(&'a OpEntryPoint),
     ExecutionMode(&'a OpExecutionMode),
-    CompileFlag(&'a OpCompileFlag),
     TypeVoid(&'a OpTypeVoid),
     TypeBool(&'a OpTypeBool),
     TypeInt(&'a OpTypeInt),
@@ -68,13 +68,13 @@ pub enum Instruction<'a> {
     TypeVector(&'a OpTypeVector),
     TypeMatrix(&'a OpTypeMatrix),
     TypeSampler(&'a OpTypeSampler),
-    TypeFilter(&'a OpTypeFilter),
     TypeArray(&'a OpTypeArray),
     TypeRuntimeArray(&'a OpTypeRuntimeArray),
     TypeStruct(&'a OpTypeStruct),
     TypeOpaque(&'a OpTypeOpaque),
     TypePointer(&'a OpTypePointer),
     TypeImage(&'a OpTypeImage),
+    TypeSampledImage(&'a OpTypeSampledImage),
     TypeFunction(&'a OpTypeFunction),
     TypeEvent(&'a OpTypeEvent),
     TypeDeviceEvent(&'a OpTypeDeviceEvent),
@@ -86,53 +86,49 @@ pub enum Instruction<'a> {
     Constant(&'a OpConstant),
     ConstantComposite(&'a OpConstantComposite),
     ConstantSampler(&'a OpConstantSampler),
-    ConstantNullPointer(&'a OpConstantNullPointer),
-    ConstantNullObject(&'a OpConstantNullObject),
+    ConstantNull(&'a OpConstantNull),
     SpecConstantTrue(&'a OpSpecConstantTrue),
     SpecConstantFalse(&'a OpSpecConstantFalse),
     SpecConstant(&'a OpSpecConstant),
     SpecConstantComposite(&'a OpSpecConstantComposite),
+    SpecConstantOp(&'a OpSpecConstantOp),
     Variable(&'a OpVariable),
-    VariableArray(&'a OpVariableArray),
     Load(&'a OpLoad),
     Store(&'a OpStore),
     CopyMemory(&'a OpCopyMemory),
     CopyMemorySized(&'a OpCopyMemorySized),
     AccessChain(&'a OpAccessChain),
     InBoundsAccessChain(&'a OpInBoundsAccessChain),
+    PtrAccessChain(&'a OpPtrAccessChain),
     ArrayLength(&'a OpArrayLength),
-    ImagePointer(&'a OpImagePointer),
+    ImageTexelPointer(&'a OpImageTexelPointer),
     GenericPtrMemSemantics(&'a OpGenericPtrMemSemantics),
     Function(&'a OpFunction),
     FunctionParameter(&'a OpFunctionParameter),
     FunctionEnd(&'a OpFunctionEnd),
     FunctionCall(&'a OpFunctionCall),
-    Sampler(&'a OpSampler),
-    TextureSample(&'a OpTextureSample),
-    TextureSampleDref(&'a OpTextureSampleDref),
-    TextureSampleLod(&'a OpTextureSampleLod),
-    TextureSampleProj(&'a OpTextureSampleProj),
-    TextureSampleGrad(&'a OpTextureSampleGrad),
-    TextureSampleOffset(&'a OpTextureSampleOffset),
-    TextureSampleProjLod(&'a OpTextureSampleProjLod),
-    TextureSampleProjGrad(&'a OpTextureSampleProjGrad),
-    TextureSampleLodOffset(&'a OpTextureSampleLodOffset),
-    TextureSampleProjOffset(&'a OpTextureSampleProjOffset),
-    TextureSampleGradOffset(&'a OpTextureSampleGradOffset),
-    TextureSampleProjLodOffset(&'a OpTextureSampleProjLodOffset),
-    TextureSampleProjGradOffset(&'a OpTextureSampleProjGradOffset),
-    TextureFetchTexelLod(&'a OpTextureFetchTexelLod),
-    TextureFetchTexelOffset(&'a OpTextureFetchTexelOffset),
-    TextureFetchSample(&'a OpTextureFetchSample),
-    TextureFetchTexel(&'a OpTextureFetchTexel),
-    TextureGather(&'a OpTextureGather),
-    TextureGatherOffset(&'a OpTextureGatherOffset),
-    TextureGatherOffsets(&'a OpTextureGatherOffsets),
-    TextureQuerySizeLod(&'a OpTextureQuerySizeLod),
-    TextureQuerySize(&'a OpTextureQuerySize),
-    TextureQueryLod(&'a OpTextureQueryLod),
-    TextureQueryLevels(&'a OpTextureQueryLevels),
-    TextureQuerySamples(&'a OpTextureQuerySamples),
+    SampledImage(&'a OpSampledImage),
+    ImageSampleImplicitLod(&'a OpImageSampleImplicitLod),
+    ImageSampleExplicitLod(&'a OpImageSampleExplicitLod),
+    ImageSampleDrefImplicitLod(&'a OpImageSampleDrefImplicitLod),
+    ImageSampleDrefExplicitLod(&'a OpImageSampleDrefExplicitLod),
+    ImageSampleProjImplicitLod(&'a OpImageSampleProjImplicitLod),
+    ImageSampleProjExplicitLod(&'a OpImageSampleProjExplicitLod),
+    ImageSampleProjDrefImplicitLod(&'a OpImageSampleProjDrefImplicitLod),
+    ImageSampleProjDrefExplicitLod(&'a OpImageSampleProjDrefExplicitLod),
+    ImageFetch(&'a OpImageFetch),
+    ImageGather(&'a OpImageGather),
+    ImageDrefGather(&'a OpImageDrefGather),
+    ImageRead(&'a OpImageRead),
+    ImageWrite(&'a OpImageRead),
+    ImageQueryDim(&'a OpImageQueryDim),
+    ImageQueryFormat(&'a OpImageQueryFormat),
+    ImageQueryOrder(&'a OpImageQueryOrder),
+    ImageQuerySizeLod(&'a OpImageQuerySizeLod),
+    ImageQuerySize(&'a OpImageQuerySize),
+    ImageQueryLod(&'a OpImageQuerySize),
+    ImageQueryLevels(&'a OpImageQueryLevels),
+    ImageQuerySamples(&'a OpImageQuerySamples),
     ConvertFToU(&'a OpConvertFToU),
     ConvertFToS(&'a OpConvertFToS),
     ConvertSToF(&'a OpConvertSToF),
@@ -140,6 +136,7 @@ pub enum Instruction<'a> {
     UConvert(&'a OpUConvert),
     SConvert(&'a OpSConvert),
     FConvert(&'a OpFConvert),
+    QuantizeToF16(&'a OpQuantizeToF16),
     ConvertPtrToU(&'a OpConvertPtrToU),
     ConvertUToPtr(&'a OpConvertUToPtr),
     PtrCastToGeneric(&'a OpPtrCastToGeneric),
@@ -197,8 +194,10 @@ pub enum Instruction<'a> {
     Ordered(&'a OpOrdered),
     Unordered(&'a OpUnordered),
     LogicalOr(&'a OpLogicalOr),
-    LogicalXor(&'a OpLogicalXor),
+    LogicalEqual(&'a OpLogicalEqual),
+    LogicalNotEqual(&'a OpLogicalNotEqual),
     LogicalAnd(&'a OpLogicalAnd),
+    LogicalNot(&'a OpLogicalNot),
     Select(&'a OpSelect),
     IEqual(&'a OpIEqual),
     FOrdEqual(&'a OpFOrdEqual),
@@ -244,7 +243,6 @@ pub enum Instruction<'a> {
     Unreachable(&'a OpUnreachable),
     LifetimeStart(&'a OpLifetimeStart),
     LifetimeStop(&'a OpLifetimeStop),
-    AtomicInit(&'a OpAtomicInit),
     AtomicLoad(&'a OpAtomicLoad),
     AtomicStore(&'a OpAtomicStore),
     AtomicExchange(&'a OpAtomicExchange),
@@ -267,8 +265,8 @@ pub enum Instruction<'a> {
     EndStreamPrimitive(&'a OpEndStreamPrimitive),
     ControlBarrier(&'a OpControlBarrier),
     MemoryBarrier(&'a OpMemoryBarrier),
-    AsyncGroupCopy(&'a OpAsyncGroupCopy),
-    WaitGroupEvents(&'a OpWaitGroupEvents),
+    GroupAsyncCopy(&'a OpGroupAsyncCopy),
+    GroupWaitEvents(&'a OpGroupWaitEvents),
     GroupAll(&'a OpGroupAll),
     GroupAny(&'a OpGroupAny),
     GroupBroadcast(&'a OpGroupBroadcast),
@@ -314,275 +312,285 @@ pub enum Instruction<'a> {
 impl<'a> Instruction<'a> {
     pub unsafe fn from_opcode_and_ptr(opcode: Op, ptr: *const u32) -> Self {
         match opcode {
-            Op::OpNop => Instruction::Nop,
-            Op::OpUndef => Instruction::Undef(&*(ptr as *const _)),
-            Op::OpSource => Instruction::Source(&*(ptr as *const _)),
-            Op::OpSourceExtension => Instruction::SourceExtension(&*(ptr as *const _)),
-            Op::OpName => Instruction::Name(&*(ptr as *const _)),
-            Op::OpMemberName => Instruction::MemberName(&*(ptr as *const _)),
-            Op::OpString => Instruction::String(&*(ptr as *const _)),
-            Op::OpLine => Instruction::Line(&*(ptr as *const _)),
-            Op::OpDecorationGroup => Instruction::DecorationGroup(&*(ptr as *const _)),
-            Op::OpDecorate => Instruction::Decorate(&*(ptr as *const _)),
-            Op::OpMemberDecorate => Instruction::MemberDecorate(&*(ptr as *const _)),
-            Op::OpGroupDecorate => Instruction::GroupDecorate(&*(ptr as *const _)),
-            Op::OpGroupMemberDecorate => Instruction::GroupMemberDecorate(&*(ptr as *const _)),
-            Op::OpExtension => Instruction::Extension(&*(ptr as *const _)),
-            Op::OpExtInstImport => Instruction::ExtInstImport(&*(ptr as *const _)),
-            Op::OpExtInst => Instruction::ExtInst(&*(ptr as *const _)),
-            Op::OpMemoryModel => Instruction::MemoryModel(&*(ptr as *const _)),
-            Op::OpEntryPoint => Instruction::EntryPoint(&*(ptr as *const _)),
-            Op::OpExecutionMode => Instruction::ExecutionMode(&*(ptr as *const _)),
-            Op::OpCompileFlag => Instruction::CompileFlag(&*(ptr as *const _)),
-            Op::OpTypeVoid => Instruction::TypeVoid(&*(ptr as *const _)),
-            Op::OpTypeBool => Instruction::TypeBool(&*(ptr as *const _)),
-            Op::OpTypeInt => Instruction::TypeInt(&*(ptr as *const _)),
-            Op::OpTypeFloat => Instruction::TypeFloat(&*(ptr as *const _)),
-            Op::OpTypeVector => Instruction::TypeVector(&*(ptr as *const _)),
-            Op::OpTypeMatrix => Instruction::TypeMatrix(&*(ptr as *const _)),
-            Op::OpTypeSampler => Instruction::TypeSampler(&*(ptr as *const _)),
-            Op::OpTypeFilter => Instruction::TypeFilter(&*(ptr as *const _)),
-            Op::OpTypeArray => Instruction::TypeArray(&*(ptr as *const _)),
-            Op::OpTypeRuntimeArray => Instruction::TypeRuntimeArray(&*(ptr as *const _)),
-            Op::OpTypeStruct => Instruction::TypeStruct(&*(ptr as *const _)),
-            Op::OpTypeOpaque => Instruction::TypeOpaque(&*(ptr as *const _)),
-            Op::OpTypePointer => Instruction::TypePointer(&*(ptr as *const _)),
-            //Op::OpTypeImage => Instruction::TypeImage(&*(ptr as *const _)),
-            Op::OpTypeFunction => Instruction::TypeFunction(&*(ptr as *const _)),
-            Op::OpTypeEvent => Instruction::TypeEvent(&*(ptr as *const _)),
-            Op::OpTypeDeviceEvent => Instruction::TypeDeviceEvent(&*(ptr as *const _)),
-            Op::OpTypeReserveId => Instruction::TypeReserveId(&*(ptr as *const _)),
-            Op::OpTypeQueue => Instruction::TypeQueue(&*(ptr as *const _)),
-            Op::OpTypePipe => Instruction::TypePipe(&*(ptr as *const _)),
-            Op::OpConstantTrue => Instruction::ConstantTrue(&*(ptr as *const _)),
-            Op::OpConstantFalse => Instruction::ConstantFalse(&*(ptr as *const _)),
-            Op::OpConstant => Instruction::Constant(&*(ptr as *const _)),
-            Op::OpConstantComposite => Instruction::ConstantComposite(&*(ptr as *const _)),
-            Op::OpConstantSampler => Instruction::ConstantSampler(&*(ptr as *const _)),
-            Op::OpConstantNullPointer => Instruction::ConstantNullPointer(&*(ptr as *const _)),
-            Op::OpConstantNullObject => Instruction::ConstantNullObject(&*(ptr as *const _)),
-            Op::OpSpecConstantTrue => Instruction::SpecConstantTrue(&*(ptr as *const _)),
-            Op::OpSpecConstantFalse => Instruction::SpecConstantFalse(&*(ptr as *const _)),
-            Op::OpSpecConstant => Instruction::SpecConstant(&*(ptr as *const _)),
-            Op::OpSpecConstantComposite => Instruction::SpecConstantComposite(&*(ptr as *const _)),
-            Op::OpVariable => Instruction::Variable(&*(ptr as *const _)),
-            Op::OpVariableArray => Instruction::VariableArray(&*(ptr as *const _)),
-            Op::OpLoad => Instruction::Load(&*(ptr as *const _)),
-            Op::OpStore => Instruction::Store(&*(ptr as *const _)),
-            Op::OpCopyMemory => Instruction::CopyMemory(&*(ptr as *const _)),
-            Op::OpCopyMemorySized => Instruction::CopyMemorySized(&*(ptr as *const _)),
-            Op::OpAccessChain => Instruction::AccessChain(&*(ptr as *const _)),
-            Op::OpInBoundsAccessChain => Instruction::InBoundsAccessChain(&*(ptr as *const _)),
-            Op::OpArrayLength => Instruction::ArrayLength(&*(ptr as *const _)),
-            Op::OpImagePointer => Instruction::ImagePointer(&*(ptr as *const _)),
-            Op::OpGenericPtrMemSemantics => Instruction::GenericPtrMemSemantics(&*(ptr as *const _)),
-            Op::OpFunction => Instruction::Function(&*(ptr as *const _)),
-            Op::OpFunctionParameter => Instruction::FunctionParameter(&*(ptr as *const _)),
-            Op::OpFunctionEnd => Instruction::FunctionEnd(&*(ptr as *const _)),
-            Op::OpFunctionCall => Instruction::FunctionCall(&*(ptr as *const _)),
-            Op::OpSampler => Instruction::Sampler(&*(ptr as *const _)),
-            Op::OpTextureSample => Instruction::TextureSample(&*(ptr as *const _)),
-            Op::OpTextureSampleDref => Instruction::TextureSampleDref(&*(ptr as *const _)),
-            Op::OpTextureSampleLod => Instruction::TextureSampleLod(&*(ptr as *const _)),
-            Op::OpTextureSampleProj => Instruction::TextureSampleProj(&*(ptr as *const _)),
-            Op::OpTextureSampleGrad => Instruction::TextureSampleGrad(&*(ptr as *const _)),
-            Op::OpTextureSampleOffset => Instruction::TextureSampleOffset(&*(ptr as *const _)),
-            Op::OpTextureSampleProjLod => Instruction::TextureSampleProjLod(&*(ptr as *const _)),
-            Op::OpTextureSampleProjGrad => Instruction::TextureSampleProjGrad(&*(ptr as *const _)),
-            Op::OpTextureSampleLodOffset => Instruction::TextureSampleLodOffset(&*(ptr as *const _)),
-            Op::OpTextureSampleProjOffset => Instruction::TextureSampleProjOffset(&*(ptr as *const _)),
-            Op::OpTextureSampleGradOffset => Instruction::TextureSampleGradOffset(&*(ptr as *const _)),
-            Op::OpTextureSampleProjLodOffset => Instruction::TextureSampleProjLodOffset(&*(ptr as *const _)),
-            Op::OpTextureSampleProjGradOffset => Instruction::TextureSampleProjGradOffset(&*(ptr as *const _)),
-            //Op::OpTextureFetchTexelLod => Instruction::TextureFetchTexelLod(&*(ptr as *const _)),
-            Op::OpTextureFetchTexelOffset => Instruction::TextureFetchTexelOffset(&*(ptr as *const _)),
-            Op::OpTextureFetchSample => Instruction::TextureFetchSample(&*(ptr as *const _)),
-            Op::OpTextureFetchTexel => Instruction::TextureFetchTexel(&*(ptr as *const _)),
-            Op::OpTextureGather => Instruction::TextureGather(&*(ptr as *const _)),
-            Op::OpTextureGatherOffset => Instruction::TextureGatherOffset(&*(ptr as *const _)),
-            Op::OpTextureGatherOffsets => Instruction::TextureGatherOffsets(&*(ptr as *const _)),
-            Op::OpTextureQuerySizeLod => Instruction::TextureQuerySizeLod(&*(ptr as *const _)),
-            Op::OpTextureQuerySize => Instruction::TextureQuerySize(&*(ptr as *const _)),
-            Op::OpTextureQueryLod => Instruction::TextureQueryLod(&*(ptr as *const _)),
-            Op::OpTextureQueryLevels => Instruction::TextureQueryLevels(&*(ptr as *const _)),
-            Op::OpTextureQuerySamples => Instruction::TextureQuerySamples(&*(ptr as *const _)),
-            Op::OpConvertFToU => Instruction::ConvertFToU(&*(ptr as *const _)),
-            Op::OpConvertFToS => Instruction::ConvertFToS(&*(ptr as *const _)),
-            Op::OpConvertSToF => Instruction::ConvertSToF(&*(ptr as *const _)),
-            Op::OpConvertUToF => Instruction::ConvertUToF(&*(ptr as *const _)),
-            Op::OpUConvert => Instruction::UConvert(&*(ptr as *const _)),
-            Op::OpSConvert => Instruction::SConvert(&*(ptr as *const _)),
-            Op::OpFConvert => Instruction::FConvert(&*(ptr as *const _)),
-            Op::OpConvertPtrToU => Instruction::ConvertPtrToU(&*(ptr as *const _)),
-            Op::OpConvertUToPtr => Instruction::ConvertUToPtr(&*(ptr as *const _)),
-            Op::OpPtrCastToGeneric => Instruction::PtrCastToGeneric(&*(ptr as *const _)),
-            Op::OpGenericCastToPtr => Instruction::GenericCastToPtr(&*(ptr as *const _)),
-            Op::OpBitcast => Instruction::Bitcast(&*(ptr as *const _)),
-            Op::OpGenericCastToPtrExplicit => Instruction::GenericCastToPtrExplicit(&*(ptr as *const _)),
-            //Op::OpSatConvertSToU => Instruction::SatConvertSToU(&*(ptr as *const _)),
-            //Op::OpSatConvertUToS => Instruction::SatConvertUToS(&*(ptr as *const _)),
-            Op::OpVectorExtractDynamic => Instruction::VectorExtractDynamic(&*(ptr as *const _)),
-            Op::OpVectorInsertDynamic => Instruction::VectorInsertDynamic(&*(ptr as *const _)),
-            Op::OpVectorShuffle => Instruction::VectorShuffle(&*(ptr as *const _)),
-            Op::OpCompositeConstruct => Instruction::CompositeConstruct(&*(ptr as *const _)),
-            Op::OpCompositeExtract => Instruction::CompositeExtract(&*(ptr as *const _)),
-            Op::OpCompositeInsert => Instruction::CompositeInsert(&*(ptr as *const _)),
-            Op::OpCopyObject => Instruction::CopyObject(&*(ptr as *const _)),
-            Op::OpTranspose => Instruction::Transpose(&*(ptr as *const _)),
-            Op::OpSNegate => Instruction::SNegate(&*(ptr as *const _)),
-            Op::OpFNegate => Instruction::FNegate(&*(ptr as *const _)),
-            Op::OpNot => Instruction::Not(&*(ptr as *const _)),
-            Op::OpIAdd => Instruction::IAdd(&*(ptr as *const _)),
-            Op::OpFAdd => Instruction::FAdd(&*(ptr as *const _)),
-            Op::OpISub => Instruction::ISub(&*(ptr as *const _)),
-            Op::OpFSub => Instruction::FSub(&*(ptr as *const _)),
-            Op::OpIMul => Instruction::IMul(&*(ptr as *const _)),
-            Op::OpFMul => Instruction::FMul(&*(ptr as *const _)),
-            Op::OpUDiv => Instruction::UDiv(&*(ptr as *const _)),
-            Op::OpSDiv => Instruction::SDiv(&*(ptr as *const _)),
-            Op::OpFDiv => Instruction::FDiv(&*(ptr as *const _)),
-            Op::OpUMod => Instruction::UMod(&*(ptr as *const _)),
-            Op::OpSRem => Instruction::SRem(&*(ptr as *const _)),
-            Op::OpSMod => Instruction::SMod(&*(ptr as *const _)),
-            Op::OpFRem => Instruction::FRem(&*(ptr as *const _)),
-            Op::OpFMod => Instruction::FMod(&*(ptr as *const _)),
-            Op::OpVectorTimesScalar => Instruction::VectorTimesScalar(&*(ptr as *const _)),
-            Op::OpMatrixTimesScalar => Instruction::MatrixTimesScalar(&*(ptr as *const _)),
-            Op::OpVectorTimesMatrix => Instruction::VectorTimesMatrix(&*(ptr as *const _)),
-            Op::OpMatrixTimesVector => Instruction::MatrixTimesVector(&*(ptr as *const _)),
-            Op::OpMatrixTimesMatrix => Instruction::MatrixTimesMatrix(&*(ptr as *const _)),
-            Op::OpOuterProduct => Instruction::OuterProduct(&*(ptr as *const _)),
-            Op::OpDot => Instruction::Dot(&*(ptr as *const _)),
-            Op::OpShiftRightLogical => Instruction::ShiftRightLogical(&*(ptr as *const _)),
-            Op::OpShiftRightArithmetic => Instruction::ShiftRightArithmetic(&*(ptr as *const _)),
-            Op::OpShiftLeftLogical => Instruction::ShiftLeftLogical(&*(ptr as *const _)),
-            Op::OpBitwiseOr => Instruction::BitwiseOr(&*(ptr as *const _)),
-            Op::OpBitwiseXor => Instruction::BitwiseXor(&*(ptr as *const _)),
-            Op::OpBitwiseAnd => Instruction::BitwiseAnd(&*(ptr as *const _)),
-            Op::OpAny => Instruction::Any(&*(ptr as *const _)),
-            Op::OpAll => Instruction::All(&*(ptr as *const _)),
-            Op::OpIsNan => Instruction::IsNan(&*(ptr as *const _)),
-            Op::OpIsInf => Instruction::IsInf(&*(ptr as *const _)),
-            Op::OpIsFinite => Instruction::IsFinite(&*(ptr as *const _)),
-            Op::OpIsNormal => Instruction::IsNormal(&*(ptr as *const _)),
-            Op::OpSignBitSet => Instruction::SignBitSet(&*(ptr as *const _)),
-            Op::OpLessOrGreater => Instruction::LessOrGreater(&*(ptr as *const _)),
-            Op::OpOrdered => Instruction::Ordered(&*(ptr as *const _)),
-            Op::OpUnordered => Instruction::Unordered(&*(ptr as *const _)),
-            Op::OpLogicalOr => Instruction::LogicalOr(&*(ptr as *const _)),
-            Op::OpLogicalXor => Instruction::LogicalXor(&*(ptr as *const _)),
-            Op::OpLogicalAnd => Instruction::LogicalAnd(&*(ptr as *const _)),
-            Op::OpSelect => Instruction::Select(&*(ptr as *const _)),
-            Op::OpIEqual => Instruction::IEqual(&*(ptr as *const _)),
-            Op::OpFOrdEqual => Instruction::FOrdEqual(&*(ptr as *const _)),
-            Op::OpFUnordEqual => Instruction::FUnordEqual(&*(ptr as *const _)),
-            Op::OpINotEqual => Instruction::INotEqual(&*(ptr as *const _)),
-            Op::OpFOrdNotEqual => Instruction::FOrdNotEqual(&*(ptr as *const _)),
-            Op::OpFUnordNotEqual => Instruction::FUnordNotEqual(&*(ptr as *const _)),
-            Op::OpULessThan => Instruction::ULessThan(&*(ptr as *const _)),
-            Op::OpSLessThan => Instruction::SLessThan(&*(ptr as *const _)),
-            Op::OpFOrdLessThan => Instruction::FOrdLessThan(&*(ptr as *const _)),
-            Op::OpFUnordLessThan => Instruction::FUnordLessThan(&*(ptr as *const _)),
-            Op::OpUGreaterThan => Instruction::UGreaterThan(&*(ptr as *const _)),
-            Op::OpSGreaterThan => Instruction::SGreaterThan(&*(ptr as *const _)),
-            Op::OpFOrdGreaterThan => Instruction::FOrdGreaterThan(&*(ptr as *const _)),
-            Op::OpFUnordGreaterThan => Instruction::FUnordGreaterThan(&*(ptr as *const _)),
-            Op::OpULessThanEqual => Instruction::ULessThanEqual(&*(ptr as *const _)),
-            Op::OpSLessThanEqual => Instruction::SLessThanEqual(&*(ptr as *const _)),
-            Op::OpFOrdLessThanEqual => Instruction::FOrdLessThanEqual(&*(ptr as *const _)),
-            Op::OpFUnordLessThanEqual => Instruction::FUnordLessThanEqual(&*(ptr as *const _)),
-            Op::OpUGreaterThanEqual => Instruction::UGreaterThanEqual(&*(ptr as *const _)),
-            Op::OpSGreaterThanEqual => Instruction::SGreaterThanEqual(&*(ptr as *const _)),
-            Op::OpFOrdGreaterThanEqual => Instruction::FOrdGreaterThanEqual(&*(ptr as *const _)),
-            Op::OpFUnordGreaterThanEqual => Instruction::FUnordGreaterThanEqual(&*(ptr as *const _)),
-            Op::OpDPdx => Instruction::DPdx(&*(ptr as *const _)),
-            Op::OpDPdy => Instruction::DPdy(&*(ptr as *const _)),
-            Op::OpFwidth => Instruction::Fwidth(&*(ptr as *const _)),
-            Op::OpDPdxFine => Instruction::DPdxFine(&*(ptr as *const _)),
-            Op::OpDPdyFine => Instruction::DPdyFine(&*(ptr as *const _)),
-            Op::OpFwidthFine => Instruction::FwidthFine(&*(ptr as *const _)),
-            Op::OpDPdxCoarse => Instruction::DPdxCoarse(&*(ptr as *const _)),
-            Op::OpDPdyCoarse => Instruction::DPdyCoarse(&*(ptr as *const _)),
-            Op::OpFwidthCoarse => Instruction::FwidthCoarse(&*(ptr as *const _)),
-            Op::OpPhi => Instruction::Phi(&*(ptr as *const _)),
-            Op::OpLoopMerge => Instruction::LoopMerge(&*(ptr as *const _)),
-            Op::OpSelectionMerge => Instruction::SelectionMerge(&*(ptr as *const _)),
-            Op::OpLabel => Instruction::Label(&*(ptr as *const _)),
-            Op::OpBranch => Instruction::Branch(&*(ptr as *const _)),
-            Op::OpBranchConditional => Instruction::BranchConditional(&*(ptr as *const _)),
-            Op::OpSwitch => Instruction::Switch(&*(ptr as *const _)),
-            Op::OpKill => Instruction::Kill(&*(ptr as *const _)),
-            Op::OpReturn => Instruction::Return(&*(ptr as *const _)),
-            Op::OpReturnValue => Instruction::ReturnValue(&*(ptr as *const _)),
-            Op::OpUnreachable => Instruction::Unreachable(&*(ptr as *const _)),
-            Op::OpLifetimeStart => Instruction::LifetimeStart(&*(ptr as *const _)),
-            Op::OpLifetimeStop => Instruction::LifetimeStop(&*(ptr as *const _)),
-            Op::OpAtomicInit => Instruction::AtomicInit(&*(ptr as *const _)),
-            Op::OpAtomicLoad => Instruction::AtomicLoad(&*(ptr as *const _)),
-            Op::OpAtomicStore => Instruction::AtomicStore(&*(ptr as *const _)),
-            Op::OpAtomicExchange => Instruction::AtomicExchange(&*(ptr as *const _)),
-            Op::OpAtomicCompareExchange => Instruction::AtomicCompareExchange(&*(ptr as *const _)),
-            Op::OpAtomicCompareExchangeWeak => Instruction::AtomicCompareExchangeWeak(&*(ptr as *const _)),
-            Op::OpAtomicIIncrement => Instruction::AtomicIIncrement(&*(ptr as *const _)),
-            Op::OpAtomicIDecrement => Instruction::AtomicIDecrement(&*(ptr as *const _)),
-            Op::OpAtomicIAdd => Instruction::AtomicIAdd(&*(ptr as *const _)),
-            Op::OpAtomicISub => Instruction::AtomicISub(&*(ptr as *const _)),
-            Op::OpAtomicUMin => Instruction::AtomicUMin(&*(ptr as *const _)),
-            Op::OpAtomicUMax => Instruction::AtomicUMax(&*(ptr as *const _)),
-            Op::OpAtomicAnd => Instruction::AtomicAnd(&*(ptr as *const _)),
-            Op::OpAtomicOr => Instruction::AtomicOr(&*(ptr as *const _)),
-            Op::OpAtomicXor => Instruction::AtomicXor(&*(ptr as *const _)),
+            Op::Nop => Instruction::Nop,
+            Op::Undef => Instruction::Undef(&*(ptr as *const _)),
+            Op::Source => Instruction::Source(&*(ptr as *const _)),
+            Op::SourceExtension => Instruction::SourceExtension(&*(ptr as *const _)),
+            Op::Name => Instruction::Name(&*(ptr as *const _)),
+            Op::MemberName => Instruction::MemberName(&*(ptr as *const _)),
+            Op::String => Instruction::String(&*(ptr as *const _)),
+            Op::Line => Instruction::Line(&*(ptr as *const _)),
+            Op::Capability => Instruction::Capability(&*(ptr as *const _)),
+            Op::DecorationGroup => Instruction::DecorationGroup(&*(ptr as *const _)),
+            Op::Decorate => Instruction::Decorate(&*(ptr as *const _)),
+            Op::MemberDecorate => Instruction::MemberDecorate(&*(ptr as *const _)),
+            Op::GroupDecorate => Instruction::GroupDecorate(&*(ptr as *const _)),
+            Op::GroupMemberDecorate => Instruction::GroupMemberDecorate(&*(ptr as *const _)),
+            Op::Extension => Instruction::Extension(&*(ptr as *const _)),
+            Op::ExtInstImport => Instruction::ExtInstImport(&*(ptr as *const _)),
+            Op::ExtInst => Instruction::ExtInst(&*(ptr as *const _)),
+            Op::MemoryModel => Instruction::MemoryModel(&*(ptr as *const _)),
+            Op::EntryPoint => Instruction::EntryPoint(&*(ptr as *const _)),
+            Op::ExecutionMode => Instruction::ExecutionMode(&*(ptr as *const _)),
+            Op::TypeVoid => Instruction::TypeVoid(&*(ptr as *const _)),
+            Op::TypeBool => Instruction::TypeBool(&*(ptr as *const _)),
+            Op::TypeInt => Instruction::TypeInt(&*(ptr as *const _)),
+            Op::TypeFloat => Instruction::TypeFloat(&*(ptr as *const _)),
+            Op::TypeVector => Instruction::TypeVector(&*(ptr as *const _)),
+            Op::TypeMatrix => Instruction::TypeMatrix(&*(ptr as *const _)),
+            Op::TypeSampler => Instruction::TypeSampler(&*(ptr as *const _)),
+            Op::TypeArray => Instruction::TypeArray(&*(ptr as *const _)),
+            Op::TypeRuntimeArray => Instruction::TypeRuntimeArray(&*(ptr as *const _)),
+            Op::TypeStruct => Instruction::TypeStruct(&*(ptr as *const _)),
+            Op::TypeOpaque => Instruction::TypeOpaque(&*(ptr as *const _)),
+            Op::TypePointer => Instruction::TypePointer(&*(ptr as *const _)),
+            Op::TypeImage => Instruction::TypeImage(&*(ptr as *const _)),
+            Op::TypeSampledImage => Instruction::TypeSampledImage(&*(ptr as *const _)),
+            Op::TypeFunction => Instruction::TypeFunction(&*(ptr as *const _)),
+            Op::TypeEvent => Instruction::TypeEvent(&*(ptr as *const _)),
+            Op::TypeDeviceEvent => Instruction::TypeDeviceEvent(&*(ptr as *const _)),
+            Op::TypeReserveId => Instruction::TypeReserveId(&*(ptr as *const _)),
+            Op::TypeQueue => Instruction::TypeQueue(&*(ptr as *const _)),
+            Op::TypePipe => Instruction::TypePipe(&*(ptr as *const _)),
+            Op::ConstantTrue => Instruction::ConstantTrue(&*(ptr as *const _)),
+            Op::ConstantFalse => Instruction::ConstantFalse(&*(ptr as *const _)),
+            Op::Constant => Instruction::Constant(&*(ptr as *const _)),
+            Op::ConstantComposite => Instruction::ConstantComposite(&*(ptr as *const _)),
+            Op::ConstantSampler => Instruction::ConstantSampler(&*(ptr as *const _)),
+            Op::ConstantNull => Instruction::ConstantNull(&*(ptr as *const _)),
+            Op::SpecConstantTrue => Instruction::SpecConstantTrue(&*(ptr as *const _)),
+            Op::SpecConstantFalse => Instruction::SpecConstantFalse(&*(ptr as *const _)),
+            Op::SpecConstant => Instruction::SpecConstant(&*(ptr as *const _)),
+            Op::SpecConstantComposite => Instruction::SpecConstantComposite(&*(ptr as *const _)),
+            Op::SpecConstantOp => Instruction::SpecConstantOp(&*(ptr as *const _)),
+            Op::Variable => Instruction::Variable(&*(ptr as *const _)),
+            Op::Load => Instruction::Load(&*(ptr as *const _)),
+            Op::Store => Instruction::Store(&*(ptr as *const _)),
+            Op::CopyMemory => Instruction::CopyMemory(&*(ptr as *const _)),
+            Op::CopyMemorySized => Instruction::CopyMemorySized(&*(ptr as *const _)),
+            Op::AccessChain => Instruction::AccessChain(&*(ptr as *const _)),
+            Op::PtrAccessChain => Instruction::PtrAccessChain(&*(ptr as *const _)),
+            Op::InBoundsAccessChain => Instruction::InBoundsAccessChain(&*(ptr as *const _)),
+            Op::ArrayLength => Instruction::ArrayLength(&*(ptr as *const _)),
+            Op::ImageTexelPointer => Instruction::ImageTexelPointer(&*(ptr as *const _)),
+            Op::GenericPtrMemSemantics => Instruction::GenericPtrMemSemantics(&*(ptr as *const _)),
+            Op::Function => Instruction::Function(&*(ptr as *const _)),
+            Op::FunctionParameter => Instruction::FunctionParameter(&*(ptr as *const _)),
+            Op::FunctionEnd => Instruction::FunctionEnd(&*(ptr as *const _)),
+            Op::FunctionCall => Instruction::FunctionCall(&*(ptr as *const _)),
+            Op::SampledImage => Instruction::SampledImage(&*(ptr as *const _)),
+            Op::ImageSampleImplicitLod => Instruction::ImageSampleImplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleExplicitLod => Instruction::ImageSampleExplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleDrefImplicitLod => Instruction::ImageSampleDrefImplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleDrefExplicitLod => Instruction::ImageSampleDrefExplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleProjImplicitLod => Instruction::ImageSampleProjImplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleProjExplicitLod => Instruction::ImageSampleProjExplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleProjDrefImplicitLod => Instruction::ImageSampleProjDrefImplicitLod(&*(ptr as *const _)),
+            Op::ImageSampleProjDrefExplicitLod => Instruction::ImageSampleProjDrefExplicitLod(&*(ptr as *const _)),
+            Op::ImageFetch => Instruction::ImageFetch(&*(ptr as *const _)),
+            Op::ImageGather => Instruction::ImageGather(&*(ptr as *const _)),
+            Op::ImageDrefGather => Instruction::ImageDrefGather(&*(ptr as *const _)),
+            Op::ImageRead => Instruction::ImageRead(&*(ptr as *const _)),
+            Op::ImageWrite => Instruction::ImageWrite(&*(ptr as *const _)),
+            //Op::ImageQueryDim => Instruction::ImageQueryDim(&*(ptr as *const _)),
+            Op::ImageQueryFormat => Instruction::ImageQueryFormat(&*(ptr as *const _)),
+            Op::ImageQueryOrder => Instruction::ImageQueryOrder(&*(ptr as *const _)),
+            Op::ImageQuerySizeLod => Instruction::ImageQuerySizeLod(&*(ptr as *const _)),
+            Op::ImageQuerySize => Instruction::ImageQuerySize(&*(ptr as *const _)),
+            Op::ImageQueryLod => Instruction::ImageQueryLod(&*(ptr as *const _)),
+            Op::ImageQueryLevels => Instruction::ImageQueryLevels(&*(ptr as *const _)),
+            Op::ImageQuerySamples => Instruction::ImageQuerySamples(&*(ptr as *const _)),
+            Op::ConvertFToU => Instruction::ConvertFToU(&*(ptr as *const _)),
+            Op::ConvertFToS => Instruction::ConvertFToS(&*(ptr as *const _)),
+            Op::ConvertSToF => Instruction::ConvertSToF(&*(ptr as *const _)),
+            Op::ConvertUToF => Instruction::ConvertUToF(&*(ptr as *const _)),
+            Op::UConvert => Instruction::UConvert(&*(ptr as *const _)),
+            Op::SConvert => Instruction::SConvert(&*(ptr as *const _)),
+            Op::FConvert => Instruction::FConvert(&*(ptr as *const _)),
+            Op::QuantizeToF16 => Instruction::QuantizeToF16(&*(ptr as *const _)),
+            Op::ConvertPtrToU => Instruction::ConvertPtrToU(&*(ptr as *const _)),
+            Op::ConvertUToPtr => Instruction::ConvertUToPtr(&*(ptr as *const _)),
+            Op::PtrCastToGeneric => Instruction::PtrCastToGeneric(&*(ptr as *const _)),
+            Op::GenericCastToPtr => Instruction::GenericCastToPtr(&*(ptr as *const _)),
+            Op::Bitcast => Instruction::Bitcast(&*(ptr as *const _)),
+            Op::GenericCastToPtrExplicit => Instruction::GenericCastToPtrExplicit(&*(ptr as *const _)),
+            Op::SatConvertSToU => Instruction::SatConvertSToU(&*(ptr as *const _)),
+            Op::SatConvertUToS => Instruction::SatConvertUToS(&*(ptr as *const _)),
+            Op::VectorExtractDynamic => Instruction::VectorExtractDynamic(&*(ptr as *const _)),
+            Op::VectorInsertDynamic => Instruction::VectorInsertDynamic(&*(ptr as *const _)),
+            Op::VectorShuffle => Instruction::VectorShuffle(&*(ptr as *const _)),
+            Op::CompositeConstruct => Instruction::CompositeConstruct(&*(ptr as *const _)),
+            Op::CompositeExtract => Instruction::CompositeExtract(&*(ptr as *const _)),
+            Op::CompositeInsert => Instruction::CompositeInsert(&*(ptr as *const _)),
+            Op::CopyObject => Instruction::CopyObject(&*(ptr as *const _)),
+            Op::Transpose => Instruction::Transpose(&*(ptr as *const _)),
+            Op::SNegate => Instruction::SNegate(&*(ptr as *const _)),
+            Op::FNegate => Instruction::FNegate(&*(ptr as *const _)),
+            Op::Not => Instruction::Not(&*(ptr as *const _)),
+            Op::IAdd => Instruction::IAdd(&*(ptr as *const _)),
+            Op::FAdd => Instruction::FAdd(&*(ptr as *const _)),
+            Op::ISub => Instruction::ISub(&*(ptr as *const _)),
+            Op::FSub => Instruction::FSub(&*(ptr as *const _)),
+            Op::IMul => Instruction::IMul(&*(ptr as *const _)),
+            Op::FMul => Instruction::FMul(&*(ptr as *const _)),
+            Op::UDiv => Instruction::UDiv(&*(ptr as *const _)),
+            Op::SDiv => Instruction::SDiv(&*(ptr as *const _)),
+            Op::FDiv => Instruction::FDiv(&*(ptr as *const _)),
+            Op::UMod => Instruction::UMod(&*(ptr as *const _)),
+            Op::SRem => Instruction::SRem(&*(ptr as *const _)),
+            Op::SMod => Instruction::SMod(&*(ptr as *const _)),
+            Op::FRem => Instruction::FRem(&*(ptr as *const _)),
+            Op::FMod => Instruction::FMod(&*(ptr as *const _)),
+            Op::VectorTimesScalar => Instruction::VectorTimesScalar(&*(ptr as *const _)),
+            Op::MatrixTimesScalar => Instruction::MatrixTimesScalar(&*(ptr as *const _)),
+            Op::VectorTimesMatrix => Instruction::VectorTimesMatrix(&*(ptr as *const _)),
+            Op::MatrixTimesVector => Instruction::MatrixTimesVector(&*(ptr as *const _)),
+            Op::MatrixTimesMatrix => Instruction::MatrixTimesMatrix(&*(ptr as *const _)),
+            Op::OuterProduct => Instruction::OuterProduct(&*(ptr as *const _)),
+            Op::Dot => Instruction::Dot(&*(ptr as *const _)),
+            Op::ShiftRightLogical => Instruction::ShiftRightLogical(&*(ptr as *const _)),
+            Op::ShiftRightArithmetic => Instruction::ShiftRightArithmetic(&*(ptr as *const _)),
+            Op::ShiftLeftLogical => Instruction::ShiftLeftLogical(&*(ptr as *const _)),
+            Op::BitwiseOr => Instruction::BitwiseOr(&*(ptr as *const _)),
+            Op::BitwiseXor => Instruction::BitwiseXor(&*(ptr as *const _)),
+            Op::BitwiseAnd => Instruction::BitwiseAnd(&*(ptr as *const _)),
+            Op::Any => Instruction::Any(&*(ptr as *const _)),
+            Op::All => Instruction::All(&*(ptr as *const _)),
+            Op::IsNan => Instruction::IsNan(&*(ptr as *const _)),
+            Op::IsInf => Instruction::IsInf(&*(ptr as *const _)),
+            Op::IsFinite => Instruction::IsFinite(&*(ptr as *const _)),
+            Op::IsNormal => Instruction::IsNormal(&*(ptr as *const _)),
+            Op::SignBitSet => Instruction::SignBitSet(&*(ptr as *const _)),
+            Op::LessOrGreater => Instruction::LessOrGreater(&*(ptr as *const _)),
+            Op::Ordered => Instruction::Ordered(&*(ptr as *const _)),
+            Op::Unordered => Instruction::Unordered(&*(ptr as *const _)),
+            Op::LogicalOr => Instruction::LogicalOr(&*(ptr as *const _)),
+            Op::LogicalNotEqual => Instruction::LogicalNotEqual(&*(ptr as *const _)),
+            Op::LogicalEqual => Instruction::LogicalEqual(&*(ptr as *const _)),
+            Op::LogicalNot => Instruction::LogicalNot(&*(ptr as *const _)),
+            Op::LogicalAnd => Instruction::LogicalAnd(&*(ptr as *const _)),
+            Op::Select => Instruction::Select(&*(ptr as *const _)),
+            Op::IEqual => Instruction::IEqual(&*(ptr as *const _)),
+            Op::FOrdEqual => Instruction::FOrdEqual(&*(ptr as *const _)),
+            Op::FUnordEqual => Instruction::FUnordEqual(&*(ptr as *const _)),
+            Op::INotEqual => Instruction::INotEqual(&*(ptr as *const _)),
+            Op::FOrdNotEqual => Instruction::FOrdNotEqual(&*(ptr as *const _)),
+            Op::FUnordNotEqual => Instruction::FUnordNotEqual(&*(ptr as *const _)),
+            Op::ULessThan => Instruction::ULessThan(&*(ptr as *const _)),
+            Op::SLessThan => Instruction::SLessThan(&*(ptr as *const _)),
+            Op::FOrdLessThan => Instruction::FOrdLessThan(&*(ptr as *const _)),
+            Op::FUnordLessThan => Instruction::FUnordLessThan(&*(ptr as *const _)),
+            Op::UGreaterThan => Instruction::UGreaterThan(&*(ptr as *const _)),
+            Op::SGreaterThan => Instruction::SGreaterThan(&*(ptr as *const _)),
+            Op::FOrdGreaterThan => Instruction::FOrdGreaterThan(&*(ptr as *const _)),
+            Op::FUnordGreaterThan => Instruction::FUnordGreaterThan(&*(ptr as *const _)),
+            Op::ULessThanEqual => Instruction::ULessThanEqual(&*(ptr as *const _)),
+            Op::SLessThanEqual => Instruction::SLessThanEqual(&*(ptr as *const _)),
+            Op::FOrdLessThanEqual => Instruction::FOrdLessThanEqual(&*(ptr as *const _)),
+            Op::FUnordLessThanEqual => Instruction::FUnordLessThanEqual(&*(ptr as *const _)),
+            Op::UGreaterThanEqual => Instruction::UGreaterThanEqual(&*(ptr as *const _)),
+            Op::SGreaterThanEqual => Instruction::SGreaterThanEqual(&*(ptr as *const _)),
+            Op::FOrdGreaterThanEqual => Instruction::FOrdGreaterThanEqual(&*(ptr as *const _)),
+            Op::FUnordGreaterThanEqual => Instruction::FUnordGreaterThanEqual(&*(ptr as *const _)),
+            Op::DPdx => Instruction::DPdx(&*(ptr as *const _)),
+            Op::DPdy => Instruction::DPdy(&*(ptr as *const _)),
+            Op::Fwidth => Instruction::Fwidth(&*(ptr as *const _)),
+            Op::DPdxFine => Instruction::DPdxFine(&*(ptr as *const _)),
+            Op::DPdyFine => Instruction::DPdyFine(&*(ptr as *const _)),
+            Op::FwidthFine => Instruction::FwidthFine(&*(ptr as *const _)),
+            Op::DPdxCoarse => Instruction::DPdxCoarse(&*(ptr as *const _)),
+            Op::DPdyCoarse => Instruction::DPdyCoarse(&*(ptr as *const _)),
+            Op::FwidthCoarse => Instruction::FwidthCoarse(&*(ptr as *const _)),
+            Op::Phi => Instruction::Phi(&*(ptr as *const _)),
+            Op::LoopMerge => Instruction::LoopMerge(&*(ptr as *const _)),
+            Op::SelectionMerge => Instruction::SelectionMerge(&*(ptr as *const _)),
+            Op::Label => Instruction::Label(&*(ptr as *const _)),
+            Op::Branch => Instruction::Branch(&*(ptr as *const _)),
+            Op::BranchConditional => Instruction::BranchConditional(&*(ptr as *const _)),
+            Op::Switch => Instruction::Switch(&*(ptr as *const _)),
+            Op::Kill => Instruction::Kill(&*(ptr as *const _)),
+            Op::Return => Instruction::Return(&*(ptr as *const _)),
+            Op::ReturnValue => Instruction::ReturnValue(&*(ptr as *const _)),
+            Op::Unreachable => Instruction::Unreachable(&*(ptr as *const _)),
+            Op::LifetimeStart => Instruction::LifetimeStart(&*(ptr as *const _)),
+            Op::LifetimeStop => Instruction::LifetimeStop(&*(ptr as *const _)),
+            Op::AtomicLoad => Instruction::AtomicLoad(&*(ptr as *const _)),
+            Op::AtomicStore => Instruction::AtomicStore(&*(ptr as *const _)),
+            Op::AtomicExchange => Instruction::AtomicExchange(&*(ptr as *const _)),
+            Op::AtomicCompareExchange => Instruction::AtomicCompareExchange(&*(ptr as *const _)),
+            Op::AtomicCompareExchangeWeak => Instruction::AtomicCompareExchangeWeak(&*(ptr as *const _)),
+            Op::AtomicIIncrement => Instruction::AtomicIIncrement(&*(ptr as *const _)),
+            Op::AtomicIDecrement => Instruction::AtomicIDecrement(&*(ptr as *const _)),
+            Op::AtomicIAdd => Instruction::AtomicIAdd(&*(ptr as *const _)),
+            Op::AtomicISub => Instruction::AtomicISub(&*(ptr as *const _)),
+            Op::AtomicUMin => Instruction::AtomicUMin(&*(ptr as *const _)),
+            Op::AtomicUMax => Instruction::AtomicUMax(&*(ptr as *const _)),
+            Op::AtomicAnd => Instruction::AtomicAnd(&*(ptr as *const _)),
+            Op::AtomicOr => Instruction::AtomicOr(&*(ptr as *const _)),
+            Op::AtomicXor => Instruction::AtomicXor(&*(ptr as *const _)),
             //Op::OpAtomicIMin => Instruction::AtomicIMin(&*(ptr as *const _)),
             //Op::OpAtomicIMax => Instruction::AtomicIMax(&*(ptr as *const _)),
-            Op::OpEmitVertex => Instruction::EmitVertex(&*(ptr as *const _)),
-            Op::OpEndPrimitive => Instruction::EndPrimitive(&*(ptr as *const _)),
-            Op::OpEmitStreamVertex => Instruction::EmitStreamVertex(&*(ptr as *const _)),
-            Op::OpEndStreamPrimitive => Instruction::EndStreamPrimitive(&*(ptr as *const _)),
-            Op::OpControlBarrier => Instruction::ControlBarrier(&*(ptr as *const _)),
-            Op::OpMemoryBarrier => Instruction::MemoryBarrier(&*(ptr as *const _)),
-            Op::OpAsyncGroupCopy => Instruction::AsyncGroupCopy(&*(ptr as *const _)),
-            Op::OpWaitGroupEvents => Instruction::WaitGroupEvents(&*(ptr as *const _)),
-            Op::OpGroupAll => Instruction::GroupAll(&*(ptr as *const _)),
-            Op::OpGroupAny => Instruction::GroupAny(&*(ptr as *const _)),
-            Op::OpGroupBroadcast => Instruction::GroupBroadcast(&*(ptr as *const _)),
-            Op::OpGroupIAdd => Instruction::GroupIAdd(&*(ptr as *const _)),
-            Op::OpGroupFAdd => Instruction::GroupFAdd(&*(ptr as *const _)),
-            Op::OpGroupFMin => Instruction::GroupFMin(&*(ptr as *const _)),
-            Op::OpGroupUMin => Instruction::GroupUMin(&*(ptr as *const _)),
-            Op::OpGroupSMin => Instruction::GroupSMin(&*(ptr as *const _)),
-            Op::OpGroupFMax => Instruction::GroupFMax(&*(ptr as *const _)),
-            Op::OpGroupUMax => Instruction::GroupUMax(&*(ptr as *const _)),
-            Op::OpGroupSMax => Instruction::GroupSMax(&*(ptr as *const _)),
-            Op::OpEnqueueMarker => Instruction::EnqueueMarker(&*(ptr as *const _)),
-            Op::OpEnqueueKernel => Instruction::EnqueueKernel(&*(ptr as *const _)),
-            Op::OpGetKernelNDrangeSubGroupCount => Instruction::GetKernelNDrangeSubGroupCount(&*(ptr as *const _)),
-            Op::OpGetKernelNDrangeMaxSubGroupSize => Instruction::GetKernelNDrangeMaxSubGroupSize(&*(ptr as *const _)),
-            Op::OpGetKernelWorkGroupSize => Instruction::GetKernelWorkGroupSize(&*(ptr as *const _)),
-            Op::OpGetKernelPreferredWorkGroupSizeMultiple => Instruction::GetKernelPreferredWorkGroupSizeMultiple(&*(ptr as *const _)),
-            Op::OpRetainEvent => Instruction::RetainEvent(&*(ptr as *const _)),
-            Op::OpReleaseEvent => Instruction::ReleaseEvent(&*(ptr as *const _)),
-            Op::OpCreateUserEvent => Instruction::CreateUserEvent(&*(ptr as *const _)),
-            Op::OpIsValidEvent => Instruction::IsValidEvent(&*(ptr as *const _)),
-            Op::OpSetUserEventStatus => Instruction::SetUserEventStatus(&*(ptr as *const _)),
-            Op::OpCaptureEventProfilingInfo => Instruction::CaptureEventProfilingInfo(&*(ptr as *const _)),
-            Op::OpGetDefaultQueue => Instruction::GetDefaultQueue(&*(ptr as *const _)),
-            Op::OpBuildNDRange => Instruction::BuildNDRange(&*(ptr as *const _)),
-            Op::OpReadPipe => Instruction::ReadPipe(&*(ptr as *const _)),
-            Op::OpWritePipe => Instruction::WritePipe(&*(ptr as *const _)),
-            Op::OpReservedReadPipe => Instruction::ReservedReadPipe(&*(ptr as *const _)),
-            Op::OpReservedWritePipe => Instruction::ReservedWritePipe(&*(ptr as *const _)),
-            Op::OpReserveReadPipePackets => Instruction::ReserveReadPipePackets(&*(ptr as *const _)),
-            Op::OpReserveWritePipePackets => Instruction::ReserveWritePipePackets(&*(ptr as *const _)),
-            Op::OpCommitReadPipe => Instruction::CommitReadPipe(&*(ptr as *const _)),
-            Op::OpCommitWritePipe => Instruction::CommitWritePipe(&*(ptr as *const _)),
-            Op::OpIsValidReserveId => Instruction::IsValidReserveId(&*(ptr as *const _)),
-            Op::OpGetNumPipePackets => Instruction::GetNumPipePackets(&*(ptr as *const _)),
-            Op::OpGetMaxPipePackets => Instruction::GetMaxPipePackets(&*(ptr as *const _)),
-            Op::OpGroupReserveReadPipePackets => Instruction::GroupReserveReadPipePackets(&*(ptr as *const _)),
-            Op::OpGroupReserveWritePipePackets => Instruction::GroupReserveWritePipePackets(&*(ptr as *const _)),
-            Op::OpGroupCommitReadPipe => Instruction::GroupCommitReadPipe(&*(ptr as *const _)),
-            Op::OpGroupCommitWritePipe => Instruction::GroupCommitWritePipe(&*(ptr as *const _)),
-            Op::OpLastValue => unreachable!()
+            Op::EmitVertex => Instruction::EmitVertex(&*(ptr as *const _)),
+            Op::EndPrimitive => Instruction::EndPrimitive(&*(ptr as *const _)),
+            Op::EmitStreamVertex => Instruction::EmitStreamVertex(&*(ptr as *const _)),
+            Op::EndStreamPrimitive => Instruction::EndStreamPrimitive(&*(ptr as *const _)),
+            Op::ControlBarrier => Instruction::ControlBarrier(&*(ptr as *const _)),
+            Op::MemoryBarrier => Instruction::MemoryBarrier(&*(ptr as *const _)),
+            Op::GroupAsyncCopy => Instruction::GroupAsyncCopy(&*(ptr as *const _)),
+            Op::GroupWaitEvents => Instruction::GroupWaitEvents(&*(ptr as *const _)),
+            Op::GroupAll => Instruction::GroupAll(&*(ptr as *const _)),
+            Op::GroupAny => Instruction::GroupAny(&*(ptr as *const _)),
+            Op::GroupBroadcast => Instruction::GroupBroadcast(&*(ptr as *const _)),
+            Op::GroupIAdd => Instruction::GroupIAdd(&*(ptr as *const _)),
+            Op::GroupFAdd => Instruction::GroupFAdd(&*(ptr as *const _)),
+            Op::GroupFMin => Instruction::GroupFMin(&*(ptr as *const _)),
+            Op::GroupUMin => Instruction::GroupUMin(&*(ptr as *const _)),
+            Op::GroupSMin => Instruction::GroupSMin(&*(ptr as *const _)),
+            Op::GroupFMax => Instruction::GroupFMax(&*(ptr as *const _)),
+            Op::GroupUMax => Instruction::GroupUMax(&*(ptr as *const _)),
+            Op::GroupSMax => Instruction::GroupSMax(&*(ptr as *const _)),
+            Op::EnqueueMarker => Instruction::EnqueueMarker(&*(ptr as *const _)),
+            Op::EnqueueKernel => Instruction::EnqueueKernel(&*(ptr as *const _)),
+            Op::GetKernelNDrangeSubGroupCount => Instruction::GetKernelNDrangeSubGroupCount(&*(ptr as *const _)),
+            Op::GetKernelNDrangeMaxSubGroupSize => Instruction::GetKernelNDrangeMaxSubGroupSize(&*(ptr as *const _)),
+            Op::GetKernelWorkGroupSize => Instruction::GetKernelWorkGroupSize(&*(ptr as *const _)),
+            Op::GetKernelPreferredWorkGroupSizeMultiple => Instruction::GetKernelPreferredWorkGroupSizeMultiple(&*(ptr as *const _)),
+            Op::RetainEvent => Instruction::RetainEvent(&*(ptr as *const _)),
+            Op::ReleaseEvent => Instruction::ReleaseEvent(&*(ptr as *const _)),
+            Op::CreateUserEvent => Instruction::CreateUserEvent(&*(ptr as *const _)),
+            Op::IsValidEvent => Instruction::IsValidEvent(&*(ptr as *const _)),
+            Op::SetUserEventStatus => Instruction::SetUserEventStatus(&*(ptr as *const _)),
+            Op::CaptureEventProfilingInfo => Instruction::CaptureEventProfilingInfo(&*(ptr as *const _)),
+            Op::GetDefaultQueue => Instruction::GetDefaultQueue(&*(ptr as *const _)),
+            Op::BuildNDRange => Instruction::BuildNDRange(&*(ptr as *const _)),
+            Op::ReadPipe => Instruction::ReadPipe(&*(ptr as *const _)),
+            Op::WritePipe => Instruction::WritePipe(&*(ptr as *const _)),
+            Op::ReservedReadPipe => Instruction::ReservedReadPipe(&*(ptr as *const _)),
+            Op::ReservedWritePipe => Instruction::ReservedWritePipe(&*(ptr as *const _)),
+            Op::ReserveReadPipePackets => Instruction::ReserveReadPipePackets(&*(ptr as *const _)),
+            Op::ReserveWritePipePackets => Instruction::ReserveWritePipePackets(&*(ptr as *const _)),
+            Op::CommitReadPipe => Instruction::CommitReadPipe(&*(ptr as *const _)),
+            Op::CommitWritePipe => Instruction::CommitWritePipe(&*(ptr as *const _)),
+            Op::IsValidReserveId => Instruction::IsValidReserveId(&*(ptr as *const _)),
+            Op::GetNumPipePackets => Instruction::GetNumPipePackets(&*(ptr as *const _)),
+            Op::GetMaxPipePackets => Instruction::GetMaxPipePackets(&*(ptr as *const _)),
+            Op::GroupReserveReadPipePackets => Instruction::GroupReserveReadPipePackets(&*(ptr as *const _)),
+            Op::GroupReserveWritePipePackets => Instruction::GroupReserveWritePipePackets(&*(ptr as *const _)),
+            Op::GroupCommitReadPipe => Instruction::GroupCommitReadPipe(&*(ptr as *const _)),
+            Op::GroupCommitWritePipe => Instruction::GroupCommitWritePipe(&*(ptr as *const _)),
+            Op::IAddCarry => unimplemented!(),
+            Op::ISubBorrow => unimplemented!(),
+            Op::SourceContinued | Op::NoLine => unimplemented!(),
+            Op::TypeForwardPointer => unimplemented!(),
+            Op::InBoundsPtrAccessChain => unimplemented!(),
+            Op::Image => unimplemented!(),
+            Op::UMulExtended => unimplemented!(),
+            Op::SMulExtended => unimplemented!(),
+            Op::AtomicFlagTestAndSet | Op::AtomicFlagClear => unimplemented!(),
+            Op::ImageSparseSampleImplicitLod | Op::ImageSparseSampleExplicitLod | Op::ImageSparseSampleDrefImplicitLod | Op::ImageSparseSampleDrefExplicitLod | Op::ImageSparseSampleProjImplicitLod | Op::ImageSparseSampleProjExplicitLod | Op::ImageSparseSampleProjDrefImplicitLod | Op::ImageSparseSampleProjDrefExplicitLod => unimplemented!(),
+            Op::ImageSparseFetch | Op::ImageSparseGather | Op::ImageSparseDrefGather | Op::ImageSparseTexelsResident => unimplemented!(),
+            Op::BitFieldInsert | Op::BitFieldSExtract | Op::BitFieldUExtract | Op::BitReverse | Op::BitCount | Op::AtomicSMin | Op::AtomicSMax => unimplemented!(),
+            Op::Count => unreachable!()
         }
     }
 }
@@ -608,7 +616,7 @@ instruction! { OpUndef, 3, 3,
 instruction! { OpSource, 2, 2,
     // Document what source language this module was translated from.
     // This has no semantic impact and can safely be removed from a module.
-    sourceLanguage: SourceLanguage,
+    source_language: SourceLanguage,
     // The version of the source language.
     version: LiteralNumber
 }
@@ -654,15 +662,11 @@ instruction! { OpString, 2, 65535,
 // Add source-level location information.
 // This has no semantic impact and can safely be removed from a module.
 instruction! { OpLine, 5, 5,
-    target: Id,             // The Result <id> to locate. It can be the Result <id>
-                                            // of any instruction: other, a variable, function, type,
-                                            // intermediate result, etc.
     file: Id,               // The <id> from an OpString instruction and is the
                                             // source-level file name.
     line: LiteralNumber,               // The source-level line number.
     column: LiteralNumber             // The source-level column number.
 }
-
 
 
 //------------------------------
@@ -688,28 +692,28 @@ instruction! { OpDecorate, 3, 65535,
                                             // grouped together by having multiple OpDecorate instructions
                                             // target the same OpDecorationGroup instruction.
     decoration: Decoration,
-    values: [LiteralNumber; 1]
+    values: UnsizedArray<LiteralNumber>
 }
 
-instruction! { OpMemberDecorate, 4, 65535,
 // Add a decoration to a member of a structure type.
+instruction! { OpMemberDecorate, 4, 65535,
     structure_type: Id,      // The <id> of a type from OpTypeStruct.
     member: LiteralNumber,             // The number of the member to decorate in the structure.
                                             // The first member is member 0, the next is member 1, ...
     decoration: Decoration,
-    values: [LiteralNumber; 1]
+    values: UnsizedArray<LiteralNumber>
 }
 
-instruction! { OpGroupDecorate, 2, 65535,
 // Add a group of decorations to another <id>.
+instruction! { OpGroupDecorate, 2, 65535,
     decorationGroup: Id,    // The <id> of an OpDecorationGroup instruction.
-    targets: [Id; 1]        // The target <id>s to decorate with the groups of decorations
+    targets: UnsizedArray<Id>        // The target <id>s to decorate with the groups of decorations
 }
 
-instruction! { OpGroupMemberDecorate, 2, 65535,
 // Add a decoration to a member of a structure type.
+instruction! { OpGroupMemberDecorate, 2, 65535,
     decorationGroup: Id,    // The <id> of an OpDecorationGroup instruction.
-    targets: [Id; 1]        // The target <id>s to decorate with the groups of decorations.
+    targets: UnsizedArray<Id>        // The target <id>s to decorate with the groups of decorations.
 }
 
 
@@ -737,7 +741,7 @@ instruction! { OpExtInst, 5, 65535,
     result_id: Id,
     set: Id,                // The result of an OpExtInstImport instruction.
     instruction: LiteralNumber,        // The enumerant of the instruction to execute within the extended instruction Set.
-    operands: [Id; 1]        // The operands to the extended instruction.
+    operands: UnsizedArray<Id>        // The operands to the extended instruction.
 }
 
 
@@ -748,13 +752,13 @@ instruction! { OpExtInst, 5, 65535,
 
 instruction! { OpMemoryModel, 3, 3,
 // Set addressing model and memory model for the entire module
-    addressingModel: AddressingModel,    // Selects the module's addressing model, see Addressing Model.
-    memoryModel: MemoryModel        // Selects the module's memory model, see Memory Model.
+    addressing_model: AddressingModel,    // Selects the module's addressing model, see Addressing Model.
+    memory_model: MemoryModel        // Selects the module's memory model, see Memory Model.
 }
 
 instruction! { OpEntryPoint, 3, 3,
 // Declare an entry point and its execution model.
-    executionModel: ExecutionModel,     // The execution model for the entry point and its static call tree.
+    execution_model: ExecutionModel,     // The execution model for the entry point and its static call tree.
                                             // See Execution Model.
     result: Id            // The Result <id> of an OpFunction instruction.
 }
@@ -766,13 +770,13 @@ instruction! { OpExecutionMode, 3, 65535,
     literals: UnsizedArray<LiteralNumber>
 }
 
-instruction! { OpCompileFlag, 1, 65535,
-// Add a compilation Flag.
-// Capability: Kernel
-    flag: LiteralString
+// Declare a capability used by this module.
+// This has no semantic impact and can safely be removed from a module.
+instruction! { OpCapability, 2, 2,
+    // Capability is the capability declared by this instruction.
+    // There are no restrictions on the order in which capabilities are declared.
+    capability: Capability
 }
-
-
 
 //------------------------------------
 //3.27.6 Type-Declaration Instructions
@@ -823,7 +827,7 @@ instruction_base! { OpTypeMatrix, 4, 4,
 
 
 // Declare a new sampler type. Consumed, for example,
-// by OpTextureSample. This type is opaque: values of
+// by OpImageSample. This type is opaque: values of
 // this type have no defined physical size or bit pattern.
 instruction_base! { OpTypeSampler, 8, 9,
     sampled_type: Id,        // A scalar type, of the type of the components resulting
@@ -853,12 +857,6 @@ instruction_base! { OpTypeSampler, 8, 9,
 
 }
 
-// Declare the filter type. Consumed by OpSampler. This
-// type is opaque: values of this type have no defined
-// physical size or bit pattern
-instruction_base! { OpTypeFilter, 2, 2 }
-
-
 // Declare a new array type: a dynamically-indexable
 // ordered aggregate of elements all having the same type.
 instruction_base! { OpTypeArray, 4, 4,
@@ -880,7 +878,7 @@ instruction_base! { OpTypeRuntimeArray, 3, 3,
 
 instruction_base! { OpTypeStruct, 2, 65535,
 // Declare a new structure type: an aggregate of heteregeneous members
-    member_type: [Id; 1]      // The type of member N of the structure.
+    member_types: UnsizedArray<Id>      // The type of member N of the structure.
                                             // The first member is member 0, the next is member 1, ...
 }
 
@@ -898,7 +896,6 @@ instruction_base! { OpTypePointer, 4, 4,
 
 // Declare a new image type.
 instruction_base! { OpTypeImage, 9, 10,
-
     sampled_type: Id,
     dimension: Dim,
     depth: LiteralNumber,
@@ -909,14 +906,19 @@ instruction_base! { OpTypeImage, 9, 10,
     access_qualifier: AccessQualifier
 }
 
-instruction_base! { OpTypeFunction, 3, 65535,
+// Declare a new sampled image type.
+instruction_base! { OpTypeSampledImage, 3, 3,
+    image_type: Id
+}
+
 // Declare a new function type. OpFunction and OpFunctionDecl,
 // will use this to declare the return type and parameter types
 // of a function.
+instruction_base! { OpTypeFunction, 3, 65535,
     return_type: Id,         // The type of the return value of functions of this type.
                                             // If the function has no return value, Return Type should
                                             // be from OpTypeVoid.
-    parameter_type: [Id; 1]  // The type <id> of the type of parameter N.
+    parameter_type: UnsizedArray<Id>  // The type <id> of the type of parameter N.
 }
 
 // Declare an OpenCL event object.
@@ -1002,18 +1004,9 @@ instruction! { OpConstantSampler, 6, 6,
     filter: LiteralNumber            // The filter mode. See Sampler Filter Mode.
 }
 
-instruction! { OpConstantNullPointer, 3, 3,
-// Declare a new null pointer constant.
+// Declare a new null constant.
 // Capability: Addr
-    result_type: Id,
-    result: Id
-}
-
-// Declare a new null object constant.
-// The objerct can be a queue, event or
-// reservation id.
-// Capability: Kernel
-instruction! { OpConstantNullObject, 3, 3,
+instruction! { OpConstantNull, 3, 3,
     result_type: Id,
     result: Id
 }
@@ -1057,17 +1050,17 @@ instruction! { OpSpecConstant, 3, 65535,
                                             // with low-order words appearing first.
 }
 
-instruction! { OpSpecConstantComposite, 3, 65535,
 // Declare a new composite specialization constant.
 // This instruction will be specialized to an
 // OpConstantComposite instruction.
 // See Specialization.
 // Capability: Shader
+instruction! { OpSpecConstantComposite, 3, 65535,
     result_type: Id,         // Must be a composite type, whose top-level members /
                                             // elements / components / columns have the same type
                                             // as the types of the operands.
     result: Id,
-    constituents: [Id; 1]    // Constituents will become members of a structure,
+    constituents: UnsizedArray<Id>    // Constituents will become members of a structure,
                                             // or elements of an array, or components
                                             // of a vector, or columns of a matrix.
                                             // There must be exactly one Constituent for each
@@ -1079,6 +1072,13 @@ instruction! { OpSpecConstantComposite, 3, 65535,
                                             // specialization constant or constant declarations.
 }
 
+// Declare a new specialization constant that results from doing an operation.
+instruction! { OpSpecConstantOp, 3, 65535,
+    result_type: Id,         // Result Type must be the type required by the Result Type of Opcode.
+    result: Id,
+    opcode: Id,
+    operands: UnsizedArray<Id>
+}
 
 
 //--------------------------
@@ -1099,18 +1099,6 @@ instruction! { OpVariable, 4, 5,
                                             // Initializer must be an <id> from a constant
                                             // instruction. Initializer must have the same type
                                             // as the type pointed to by Result Type.
-}
-
-instruction! { OpVariableArray, 5, 5,
-// Allocate <count> objects sequentially in memory,
-// resulting in a pointer to the first such object
-// Note: This is not the same thing as allocating a single object that is an array.
-// Capability: Addr
-    result_type: Id,         // A type from OpTypePointer whose type pointed to is
-                                            // The type of one of the <count> objects allocated in memory.
-    result: Id,
-    storage_class: StorageClass,       // The kind of memory holding the object.
-    count: Id             // Is the number of objects to allocate.
 }
 
 instruction! { OpLoad, 4, 65535,
@@ -1151,19 +1139,39 @@ instruction! { OpCopyMemorySized, 4, 65535,
     memory_access_shift: [MemoryAccessShift; 1]   // Must be a Memory Access literal. See Memory Access for more detail.
 }
 
-instruction! { OpAccessChain, 4, 65535,
 // Create a pointer into a composite object
 // that can be used with OpLoad and OpStore.
 // The storage class of the pointer created
 // will be the same as the storage class of
 // the base operand.
+instruction! { OpAccessChain, 4, 65535,
     result_type: Id,
     result: Id,
-    base: Id,               // Must be a pointer type, pointing to the base of the object.
-    indexes: [Id; 1]         // Indexes walk the type hierarchy to the desired depth,
-                                            // potentially down to scalar granularity.
-                                            // The type of the pointer created will be to the type reached
-                                            // by walking the type hierarchy down to the last provided index.
+    // Must be a pointer type, pointing to the base of the object.
+    base: Id,
+    // Indexes walk the type hierarchy to the desired depth,
+    // potentially down to scalar granularity.
+    // The type of the pointer created will be to the type reached
+    // by walking the type hierarchy down to the last provided index.
+    indexes: UnsizedArray<Id>
+}
+
+// Has the same semantics as OpAccessChain, with the addition of the Element operand.
+instruction! { OpPtrAccessChain, 5, 65535,
+    result_type: Id,
+    result: Id,
+    // Must be a pointer type, pointing to the base of the object.
+    base: Id,
+    // Element is used to do the initial dereference of Base: Base is treated as the address of the first
+    // element of an array, and the Element element’s address is computed to be the base for the Indexes, as
+    // per OpAccessChain. The type of Base after being dereferenced with Element is still the same as the
+    // original type of Base.
+    element: Id,
+    // Indexes walk the type hierarchy to the desired depth,
+    // potentially down to scalar granularity.
+    // The type of the pointer created will be to the type reached
+    // by walking the type hierarchy down to the last provided index.
+    indexes: UnsizedArray<Id>
 }
 
 instruction! { OpInBoundsAccessChain, 4, 65535,
@@ -1173,7 +1181,7 @@ instruction! { OpInBoundsAccessChain, 4, 65535,
     result_type: Id,
     result: Id,
     base: Id,
-    indices: [Id; 1]
+    indices: UnsizedArray<Id>
 }
 
 instruction! { OpArrayLength, 5, 5,
@@ -1187,7 +1195,7 @@ instruction! { OpArrayLength, 5, 5,
                                             // OpTypeRuntimeArray.
 }
 
-instruction! { OpImagePointer, 6, 6,
+instruction! { OpImageTexelPointer, 6, 6,
 // Form a pointer to a texel of an image.
 // Use of such a pointer is limited to atomic operations.
 // TBD. This requires an Image storage class to be added.
@@ -1264,7 +1272,7 @@ instruction! { OpFunctionCall, 4, 65535,
     result: Id,
     function: Id,           // The <id> of an OpFunction instruction.
                                             // This could be a forward reference.
-    arguments: [Id; 1]      // The <id>s of the object to copy to parameter N of Function
+    arguments: UnsizedArray<Id>      // The <id>s of the object to copy to parameter N of Function
 }
 
 
@@ -1275,7 +1283,7 @@ instruction! { OpFunctionCall, 4, 65535,
 
 
 
-instruction! { OpSampler, 5, 5,
+instruction! { OpSampledImage, 5, 5,
 // Create a sampler containing both a filter and texture.
     result_type: Id,         // Must be an OpTypeSampler whose Sampled Type,
                                             // Dim, Arrayed, Comparison, and
@@ -1291,7 +1299,6 @@ instruction! { OpSampler, 5, 5,
     filter: Id            // Must be an object whose type is OpTypeFilter.
 }
 
-instruction! { OpTextureSample, 5, 65535,
 // Sample a texture with an implicit level of detail.
 //
 // This instruction is only allowed under the
@@ -1300,6 +1307,7 @@ instruction! { OpTextureSample, 5, 65535,
 // be affected by code motion.
 //
 // Capability: Shader
+instruction! { OpImageSampleImplicitLod, 5, 65535,
     result_type: Id,         // Result Type's component type must be the same as
                                             // Sampled Type of Sampler's type. Result Type must
                                             // be scalar if the Sampler's type sets depth-comparison,
@@ -1314,10 +1322,9 @@ instruction! { OpTextureSample, 5, 65535,
                                             // by the definiton of Sampler.
                                             // It may be a vector larger than needed, but all
                                             // unused components will appear after all used components.
-    bias: Id               //(optional) A bias to the implicit level of detail.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleDref, 6, 6,
 // Sample a cube-map-array texture with depth
 // comparison using an implicit level of detail.
 //
@@ -1327,6 +1334,7 @@ instruction! { OpTextureSampleDref, 6, 6,
 // be affected by code motion.
 //
 // Capability: Shader
+instruction! { OpImageSampleDrefImplicitLod, 6, 6,
     result_type: Id,         // Must be scalar of the same type as Sampled Type
                                             // of Sampler's type.
     result: Id,
@@ -1335,32 +1343,10 @@ instruction! { OpTextureSampleDref, 6, 6,
                                             // indicating both a texture and a filter.
                                             // It must be for a Cube-arrayed depth-comparison type.
     coordinate: Id,         // A vector of size 4 containing (u, v, w, array layer).
-    dref: Id               // The depth-comparison reference value.
+    dref: Id,               // The depth-comparison reference value.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleLod, 6, 6,
-// Sample a texture using an explicit
-// level of detail.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must
-                                            // be scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // a floating-point scalar or vector containing
-                                            //(u[, v] ... [, array layer] [, Dref]) as needed
-                                            // by the definiton of Sampler.
-                                            // It may be a vector larger than needed, but all
-                                            // unused components will appear after all used components.
-    levelOfDetail: Id     // explicitly controls the level of detail used when sampling.
-}
-
-instruction! { OpTextureSampleProj, 5, 6,
 // Sample a texture with a projective
 // coordinate using an implicit level of detail.
 //
@@ -1370,6 +1356,7 @@ instruction! { OpTextureSampleProj, 5, 6,
 // be affected by code motion.
 //
 // Capability: Shader
+instruction! { OpImageSampleProjImplicitLod, 5, 6,
     result_type: Id,         // Result Type's component type must be the same as
                                             // Sampled Type of Sampler's type. Result Type must
                                             // be scalar if the Sampler's type sets depth-comparison,
@@ -1386,38 +1373,10 @@ instruction! { OpTextureSampleProj, 5, 6,
                                             // That is, the actual sample coordinate will be
                                             //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]), as
                                             // needed by the definiton of Sampler.
-    bias: Id               //(optional) A bias to the implicit level of detail.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleGrad, 7, 7,
-// Sample a texture with an explicit gradient.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            //(u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    dx: Id,
-    dy: Id             // dx and dy are explicit derivatives in the x
-                                            // and y direction to use in computing level of
-                                            // detail. Each is a scalar or vector containing
-                                            //(du/dx[, dv/dx][, dw/dx]) and
-                                            //(du/dy[, dv/dy][, dw/dy]).
-                                            // The number of components of each must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-instruction! { OpTextureSampleOffset, 6, 7,
-// Sample a texture with an offset from a
+// Sample a texture with a projective
 // coordinate using an implicit level of detail.
 //
 // This instruction is only allowed under the
@@ -1426,121 +1385,103 @@ instruction! { OpTextureSampleOffset, 6, 7,
 // be affected by code motion.
 //
 // Capability: Shader
+instruction! { OpImageSampleProjDrefImplicitLod, 5, 6,
     result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
+                                            // Sampled Type of Sampler's type. Result Type must
+                                            // be scalar if the Sampler's type sets depth-comparison,
                                             // and must be a vector of four components if the
                                             // Sampler's type does not set depth-comparison.
     result: Id,
     sampler: Id,            // Must be an object of a type made by OpTypeSampler.
                                             // Its type must have its Content operand set to 2,
                                             // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            //(u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    offset: Id,             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-    bias: Id                // An optional operand. If present, it is used as
-                                            // a bias to the implicit level of detail.
+    coordinate: Id,         // A floating-point vector of four components containing
+                                            //(u [, v] [, Dref], q) or (u [, v] [,w], q), as
+                                            // needed by the definiton of Sampler, with the q
+                                            // component consumed for the projective division.
+                                            // That is, the actual sample coordinate will be
+                                            //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]), as
+                                            // needed by the definiton of Sampler.
+    dref: Id,               // The depth-comparison reference value.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleProjLod, 6, 6,
+// Sample a texture using an explicit
+// level of detail.
+//
+// Capability: Shader
+instruction! { OpImageSampleExplicitLod, 6, 6,
+    result_type: Id,         // Result Type's component type must be the same as
+                                            // Sampled Type of Sampler's type. Result Type must
+                                            // be scalar if the Sampler's type sets depth-comparison,
+                                            // and must be a vector of four components if the
+                                            // Sampler's type does not set depth-comparison.
+    result: Id,
+    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
+                                            // Its type must have its Content operand set to 2,
+                                            // indicating both a texture and a filter.
+    coordinate: Id,         // a floating-point scalar or vector containing
+                                            //(u[, v] ... [, array layer] [, Dref]) as needed
+                                            // by the definiton of Sampler.
+                                            // It may be a vector larger than needed, but all
+                                            // unused components will appear after all used components.
+    operands: UnsizedArray<Id>
+}
+
+
+// Sample a cube-map-array texture with depth
+// comparison using an explicit level of detail.
+//
+// This instruction is only allowed under the
+// Fragment Execution Model. In addition, it
+// consumes an implicit derivative that can
+// be affected by code motion.
+//
+// Capability: Shader
+instruction! { OpImageSampleDrefExplicitLod, 6, 6,
+    result_type: Id,         // Must be scalar of the same type as Sampled Type
+                                            // of Sampler's type.
+    result: Id,
+    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
+                                            // Its type must have its Content operand set to 2,
+                                            // indicating both a texture and a filter.
+                                            // It must be for a Cube-arrayed depth-comparison type.
+    coordinate: Id,         // A vector of size 4 containing (u, v, w, array layer).
+    dref: Id,               // The depth-comparison reference value.
+    operands: UnsizedArray<Id>
+}
+
 // Sample a texture with a projective
 // coordinate using an explicit level of detail.
 //
+// This instruction is only allowed under the
+// Fragment Execution Model. In addition, it
+// consumes an implicit derivative that can
+// be affected by code motion.
+//
 // Capability: Shader
+instruction! { OpImageSampleProjExplicitLod, 5, 6,
     result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
+                                            // Sampled Type of Sampler's type. Result Type must
+                                            // be scalar if the Sampler's type sets depth-comparison,
                                             // and must be a vector of four components if the
                                             // Sampler's type does not set depth-comparison.
     result: Id,
     sampler: Id,            // Must be an object of a type made by OpTypeSampler.
                                             // Its type must have its Content operand set to 2,
                                             // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point vector of four components
-                                            // containing (u [,v] [,Dref], q)
-                                            // or (u [,v] [,w], q), as needed by the definiton
-                                            // of Sampler, with the q component consumed for
-                                            // the projective division.
+    coordinate: Id,         // A floating-point vector of four components containing
+                                            //(u [, v] [, Dref], q) or (u [, v] [,w], q), as
+                                            // needed by the definiton of Sampler, with the q
+                                            // component consumed for the projective division.
                                             // That is, the actual sample coordinate will be
-                                            //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]),
-                                            // as needed by the definiton of Sampler.
-    level_of_detail: Id     // explicitly controls the level of detail
-                                            // used when sampling.
+                                            //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]), as
+                                            // needed by the definiton of Sampler.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleProjGrad, 7, 7,
 // Sample a texture with a projective
-// coordinate using an explicit gradient.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point vector of four components
-                                            // containing (u [,v] [,Dref], q)
-                                            // or (u [,v] [,w], q), as needed by the definiton
-                                            // of Sampler, with the q component consumed for
-                                            // the projective division.
-                                            // That is, the actual sample coordinate will be
-                                            //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]),
-                                            // as needed by the definiton of Sampler.
-    dx: Id,
-    dy: Id            // dx and dy are explicit derivatives in the x
-                                            // and y direction to use in computing level of
-                                            // detail. Each is a scalar or vector containing
-                                            //(du/dx[, dv/dx][, dw/dx]) and
-                                            //(du/dy[, dv/dy][, dw/dy]).
-                                            // The number of components of each must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-// Sample a texture with explicit level of
-// detail using an offset from a coordinate.
-//
-// Capability: Shader
-instruction! { OpTextureSampleLodOffset, 7, 7,
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            // (u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    levelOfDetail: Id,      // explicitly controls the level of detail
-                                            // used when sampling.
-    offset: Id             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-instruction! { OpTextureSampleProjOffset, 6, 7,
-// Sample a texture with an offset from a projective
-// coordinate using an implicit level of detail.
+// coordinate using an explicit level of detail.
 //
 // This instruction is only allowed under the
 // Fragment Execution Model. In addition, it
@@ -1548,148 +1489,31 @@ instruction! { OpTextureSampleProjOffset, 6, 7,
 // be affected by code motion.
 //
 // Capability: Shader
+instruction! { OpImageSampleProjDrefExplicitLod, 5, 6,
     result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
+                                            // Sampled Type of Sampler's type. Result Type must
+                                            // be scalar if the Sampler's type sets depth-comparison,
                                             // and must be a vector of four components if the
                                             // Sampler's type does not set depth-comparison.
     result: Id,
     sampler: Id,            // Must be an object of a type made by OpTypeSampler.
                                             // Its type must have its Content operand set to 2,
                                             // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point vector of four components
-                                            // containing (u [,v] [,Dref], q)
-                                            // or (u [,v] [,w], q), as needed by the definiton
-                                            // of Sampler, with the q component consumed for
-                                            // the projective division.
+    coordinate: Id,         // A floating-point vector of four components containing
+                                            //(u [, v] [, Dref], q) or (u [, v] [,w], q), as
+                                            // needed by the definiton of Sampler, with the q
+                                            // component consumed for the projective division.
                                             // That is, the actual sample coordinate will be
-                                            // (u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]),
-                                            // as needed by the definiton of Sampler.
-    offset: Id,             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-    bias: Id                // (optional) A bias to the implicit level of detail.
+                                            //(u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]), as
+                                            // needed by the definiton of Sampler.
+    dref: Id,               // The depth-comparison reference value.
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureSampleGradOffset, 8, 8,
-// Sample a texture with an offset
-// coordinate and an explicit gradient.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            // (u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    dx: Id,
-    dy: Id,             // dx and dy are explicit derivatives in the x
-                                            // and y direction to use in computing level of
-                                            // detail. Each is a scalar or vector containing
-                                            // (du/dx[, dv/dx][, dw/dx]) and
-                                            // (du/dy[, dv/dy][, dw/dy]).
-                                            // The number of components of each must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-    offset: Id             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-instruction! { OpTextureSampleProjLodOffset, 7, 7,
-// Sample a texture with an offset from a projective
-// coordinate and an explicit level of detail.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point vector of four components
-                                            // containing (u [,v] [,Dref], q)
-                                            // or (u [,v] [,w], q), as needed by the definiton
-                                            // of Sampler, with the q component consumed for
-                                            // the projective division.
-                                            // That is, the actual sample coordinate will be
-                                            // (u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]),
-                                            // as needed by the definiton of Sampler.
-    levelOfDetail: Id,      // explicitly controls the level of detail
-                                            // used when sampling.
-    offset: Id             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-instruction! { OpTextureSampleProjGradOffset, 8, 8,
-// Sample a texture with an offset from a projective
-// coordinate and an explicit gradient.
-//
-// Capability: Shader
-    result_type: Id,         // Result Type's component type must be the same as
-                                            // Sampled Type of Sampler's type. Result Type must be
-                                            // scalar if the Sampler's type sets depth-comparison,
-                                            // and must be a vector of four components if the
-                                            // Sampler's type does not set depth-comparison.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-    coordinate: Id,         // A floating-point vector of four components
-                                            // containing (u [,v] [,Dref], q)
-                                            // or (u [,v] [,w], q), as needed by the definiton
-                                            // of Sampler, with the q component consumed for
-                                            // the projective division.
-                                            // That is, the actual sample coordinate will be
-                                            // (u/q[, v/q][, Dref/q]) or (u/q[, v/q][, w/q]),
-                                            // as needed by the definiton of Sampler.
-    dx: Id, dy: Id,             // dx and dy are explicit derivatives in the x
-                                            // and y direction to use in computing level of
-                                            // detail. Each is a scalar or vector containing
-                                            // (du/dx[, dv/dx][, dw/dx]) and
-                                            // (du/dy[, dv/dy][, dw/dy]).
-                                            // The number of components of each must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-    offset: Id             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-instruction! { OpTextureFetchTexelLod, 6, 6,
 // Fetch a single texel from a texture.
 //
 // Capability: Shader
+instruction! { OpImageFetch, 5, 5,
     result_type: Id,         // Must be a vector of four components of the same
                                             // type as Sampled Type of Sampler's type.
     result: Id,
@@ -1702,153 +1526,122 @@ instruction! { OpTextureFetchTexelLod, 6, 6,
     coordinate: Id,         // An integer scalar or vector containing
                                             // (u[, v] ... [, array layer]) as needed by the
                                             // definiton of Sampler.
-    levelOfDetail: Id     // Explicitly controls the level of detail
-                                            // used when sampling.
+    operands: UnsizedArray<Id>
 }
 
-// Fetch a single offset texel from a texture.
-//
-// Capability: Shader
-instruction! { OpTextureFetchTexelOffset, 6, 6,
-
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must have a Dim of 1D, 2D, or 3D.
-                                            // It cannot have depth-comparison type
-                                            // (the type's Compare operand must be 0).
-    coordinate: Id,         // An integer scalar or vector containing
-                                            // (u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    offset: Id             // Added to (u, v, w) before texel lookup.
-                                            // It must be an <id> of an integer-based constant
-                                            // instruction of scalar or vector type.
-                                            // It is a compile-time error if these fall outside
-                                            // a target-dependent allowed range.
-                                            // The number of components in Offset must equal
-                                            // the number of components in Coordinate,
-                                            // minus the array layer component, if present.
-}
-
-// Fetch a single sample from a multi-sample texture.
-//
-// Capability: Shader
-instruction! { OpTextureFetchSample, 6, 6,
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must be a multi-sample texture.
-    coordinate: Id,         // An integer scalar or vector containing
-                                            // (u[, v] ... [, array layer]) as needed by the
-                                            // definiton of Sampler.
-    sample: Id            // The sample number of the sample to return.
-}
-
-// Fetch an element out of a buffer texture.
-//
-// Capability: Shader
-instruction! { OpTextureFetchTexel, 5, 5,
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-    result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must have a Dim of Rect or Buffer.
-    element: Id           // A scalar integer index into the buffer.
-}
-
-instruction! { OpTextureGather, 6, 6,
 // Gathers the requested component from
 // four sampled texels.
 //
 // Capability: Shader
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-                                            // The result has one component per gathered texel.
+instruction! { OpImageGather, 6, 6,
+    // Must be a vector of four components of the same
+    // type as Sampled Type of Sampler's type.
+    // The result has one component per gathered texel.
+    result_type: Id,
     result: Id,
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must have a Dim of 2D, Cube, or Rect.
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            // (u[, v] ... [, array layer] [, Dref]) as needed
-                                            // by the definiton of Sampler.
-    component: Id           // component number that will be gathered from all
-                                            // four texels. It must be 0, 1, 2 or 3.
+    // Must be an object of a type made by OpSampledImage.
+    // Its OpTypeImage must have a Dim of 2D, Cube, or Rect.
+    sampled_image: Id,
+    // A floating-point scalar or vector containing
+    // (u[, v] ... [, array layer] [, Dref]) as needed
+    // by the definiton of Sampler.
+    coordinate: Id,
+    // component number that will be gathered from all
+    // four texels. It must be 0, 1, 2 or 3.
+    component: Id,
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureGatherOffset, 7, 7,
 // Gathers the requested component from
-// four offset sampled texels.
+// four sampled texels.
 //
 // Capability: Shader
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-                                            // The result has one component per gathered texel.
-
+instruction! { OpImageDrefGather, 6, 6,
+    // Must be a vector of four components of the same
+    // type as Sampled Type of Sampler's type.
+    // The result has one component per gathered texel.
+    result_type: Id,
     result: Id,
-
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must have a Dim of 2D or Rect.
-
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            // (u[, v] ... [, array layer] [, Dref]) as needed
-                                            // by the definiton of Sampler.
-
-    component: Id,          // component number that will be gathered from all
-                                            // four texels. It must be 0, 1, 2 or 3.
-
-    offset: Id              // Added to (u, v) before texel lookup. It is a
-                                            // compile-time error if these fall outside a
-                                            // target-dependent allowed range.
+    // Must be an object of a type made by OpSampledImage.
+    // Its OpTypeImage must have a Dim of 2D, Cube, or Rect.
+    sampled_image: Id,
+    // A floating-point scalar or vector containing
+    // (u[, v] ... [, array layer] [, Dref]) as needed
+    // by the definiton of Sampler.
+    coordinate: Id,
+    // component number that will be gathered from all
+    // four texels. It must be 0, 1, 2 or 3.
+    component: Id,
+    // The depth-comparison reference value.
+    dref: Id,
+    operands: UnsizedArray<Id>
 }
 
-instruction! { OpTextureGatherOffsets, 7, 7,
-// Gathers the requested component from
-// four offset sampled texels.
+// Read a texel from an image without a sampler.
+instruction! { OpImageRead, 5, 5,
+    // Result Type must be a scalar or vector of floating-point type or integer type.
+    // Its components must be the same as Sampled Type of the OpTypeImage (unless that underlying Sampled Type is OpTypeVoid).
+    result_type: Id,
+    result: Id,
+    // Image must be an object whose type is OpTypeImage with a Sampled operand of 0 or 2.
+    image: Id,
+    // Coordinate is an integer scalar or vector containing non-parametric texel coordinates (u[, v] . . . [, array layer]) as needed
+    // by the definiton of Image. If the coordinates are outside the image, the memory location that is accessed is undefined.
+    coordinate: Id
+}
+
+// Writes a texel from an image without a sampler.
+instruction! { OpImageWrite, 5, 5,
+    // Result Type must be a scalar or vector of floating-point type or integer type.
+    // Its components must be the same as Sampled Type of the OpTypeImage (unless that underlying Sampled Type is OpTypeVoid).
+    result_type: Id,
+    result: Id,
+    // Image must be an object whose type is OpTypeImage with a Sampled operand of 0 or 2.
+    image: Id,
+    // Coordinate is an integer scalar or vector containing non-parametric texel coordinates (u[, v] . . . [, array layer]) as needed
+    // by the definiton of Image. If the coordinates are outside the image, the memory location that is accessed is undefined.
+    coordinate: Id
+}
+
+// Query the image format of an image created with an Unknown Image Format.
 //
-// Capability: Shader
-    result_type: Id,         // Must be a vector of four components of the same
-                                            // type as Sampled Type of Sampler's type.
-                                            // The result has one component per gathered texel.
-
+// Capability: Kernel
+instruction! { OpImageQueryDim, 4, 4,
+    // Result Type must be a scalar integer type. The resulting value is an enumerant from Image Channel Data Type.
+    result_type: Id,
     result: Id,
-
-    sampler: Id,            // Must be an object of a type made by OpTypeSampler.
-                                            // Its type must have its Content operand set to 2,
-                                            // indicating both a texture and a filter.
-                                            // It must have a Dim of 2D or Rect.
-
-    coordinate: Id,         // A floating-point scalar or vector containing
-                                            // (u[, v] ... [, array layer] [, Dref]) as needed
-                                            // by the definiton of Sampler.
-
-    component: Id,          // component number that will be gathered from all
-                                            // four texels. It must be 0, 1, 2 or 3.
-
-    offsets: Id            // Must be an <id> of a constant instruction making
-                                            // an array of size four of vectors of two integer
-                                            // components. Each gathered texel is identified
-                                            // by adding one of these array elements to the
-                                            // (u, v) sampled location. It is a compile-time
-                                            // error if this falls outside a target-dependent
-                                            // allowed range.
+    // Image must be an object whose type is OpTypeSampledImage or OpTypeImage.
+    image: Id
 }
 
-instruction! { OpTextureQuerySizeLod, 5, 5,
+// Query the image format of an image created with an Unknown Image Format.
+//
+// Capability: Kernel
+instruction! { OpImageQueryFormat, 4, 4,
+    // Result Type must be a scalar integer type. The resulting value is an enumerant from Image Channel Data Type.
+    result_type: Id,
+    result: Id,
+    // Image must be an object whose type is OpTypeSampledImage or OpTypeImage.
+    image: Id
+}
+
+// Query the image order of an image created with an Unknown Image Format.
+//
+// Capability: Kernel
+instruction! { OpImageQueryOrder, 4, 4,
+    // Result Type must be a scalar integer type. The resulting value is an enumerant from Image Channel Order.
+    result_type: Id,
+    result: Id,
+    // Image must be an object whose type is OpTypeSampledImage or OpTypeImage.
+    image: Id
+}
+
 // Query the dimensions of the texture for
 // Sampler for mipmap level for Level of Detail.
 //
 // Capability: Shader
+instruction! { OpImageQuerySizeLod, 5, 5,
+
     result_type: Id,         // Must be an integer type scalar or vector.
                                             // The number of components must be
                                             // 1 for 1D Dim,
@@ -1869,14 +1662,14 @@ instruction! { OpTextureQuerySizeLod, 5, 5,
                                             // Sampler must have a type with Dim
                                             // of 1D, 2D, 3D, or Cube.
                                             // Sampler cannot have a multisampled type.
-                                            // See OpTextureQuerySize for querying texture
+                                            // See OpImageQuerySize for querying texture
                                             // types lacking level of detail.
 
     levelOfDetail: Id     // explicitly controls the level of detail
                                             // used when sampling.
 }
 
-instruction! { OpTextureQuerySize, 4, 4,
+instruction! { OpImageQuerySize, 4, 4,
 // Query the dimensions of the texture for
 // Sampler, with no level of detail.
 //
@@ -1898,11 +1691,11 @@ instruction! { OpTextureQuerySize, 4, 4,
                                             // Sampler cannot have a texture with levels of
                                             // detail; there is no implicit level-of-detail
                                             // consumed by this instruction.
-                                            // See OpTextureQuerySizeLod for querying textures
+                                            // See OpImageQuerySizeLod for querying textures
                                             // having level of detail.
 }
 
-instruction! { OpTextureQueryLod, 5, 5,
+instruction! { OpImageQueryLod, 5, 5,
 // Query the mipmap level and the level
 // of detail for a hypothetical sampling
 // of Sampler at Coordinate using an
@@ -1934,7 +1727,7 @@ instruction! { OpTextureQueryLod, 5, 5,
                                             // definiton of Sampler.
 }
 
-instruction! { OpTextureQueryLevels, 4, 4,
+instruction! { OpImageQueryLevels, 4, 4,
 // Query the number of mipmap levels
 // accessible through Sampler.
 //
@@ -1954,7 +1747,7 @@ instruction! { OpTextureQueryLevels, 4, 4,
                                             // of 1D, 2D, 3D, or Cube.
 }
 
-instruction! { OpTextureQuerySamples, 4, 4,
+instruction! { OpImageQuerySamples, 4, 4,
 // Query the number of samples available
 // per texel fetch in a multisample texture.
 //
@@ -1989,7 +1782,7 @@ instruction! { OpConvertFToU, 4, 4,
 // Result Type cannot be a signed integer type.
     result_type: Id,
     result: Id,
-    floatValue: Id
+    float_value: Id
 }
 
 instruction! { OpConvertFToS, 4, 4,
@@ -2002,7 +1795,7 @@ instruction! { OpConvertFToS, 4, 4,
 // Must have the same number of components.
     result_type: Id,
     result: Id,
-    floatValue: Id
+    float_value: Id
 }
 
 instruction! { OpConvertSToF, 4, 4,
@@ -2072,7 +1865,14 @@ instruction! { OpFConvert, 4, 4,
 // operand and the Result Type must be different.
     result_type: Id,
     result: Id,
-    floatValue: Id
+    float_value: Id
+}
+
+// Quantize a floating-point value to a what is expressable by a 16-bit floating-point value.
+instruction! { OpQuantizeToF16, 4, 4,
+    result_type: Id,
+    result: Id,
+    value: Id
 }
 
 instruction! { OpConvertPtrToU, 4, 4,
@@ -2159,7 +1959,6 @@ instruction! { OpBitcast, 4, 4,
     operand: Id           // The bit pattern whose type will change.
 }
 
-instruction! { OpGenericCastToPtrExplicit, 4, 4,
 // Attempts to explicitly convert Source
 // pointer to storage storage-class
 // pointer value. Source pointer must
@@ -2172,6 +1971,7 @@ instruction! { OpGenericCastToPtrExplicit, 4, 4,
 // Must point to the same type.
 //
 // Capability: Kernel
+instruction! { OpGenericCastToPtrExplicit, 4, 4,
     result_type: Id,         // Must be a pointer type pointing to storage
                                             //Storage Class. Storage can be one of the
                                             // following literal values:
@@ -2283,7 +2083,7 @@ instruction! { OpCompositeConstruct, 3, 65535,
                                             // vectors with the same component type as the Result Type component type. When constructing a vector, the total number of
                                             // components in all the operands must equal the number of components in Result Type.
     result: Id,
-    constituents: [Id; 1]    // Constituents will become members of a structure, or elements of an array, or components of a vector, or columns of a
+    constituents: UnsizedArray<Id>    // Constituents will become members of a structure, or elements of an array, or components of a vector, or columns of a
                                             // matrix. There must be exactly one Constituent for each top-level member / element / component / column of the result, with
                                             // one exception. The exception is that for constructing a vector, a contiguous subset of the scalars consumed can be
                                             // represented by a vector operand instead. The Constituents must appear in the order needed by the definition of the type of
@@ -2307,7 +2107,7 @@ instruction! { OpCompositeInsert, 5, 65535,
     result: Id,
     object: Id,             // The object to insert.
     composite: Id,          // Composite in the composite to insert into.
-    indexes: [LiteralNumber; 1]         // Indexes walk the type hierarchy to the desired depth, potentially down to component granularity. All indexes must be in bounds.
+    indexes: UnsizedArray<LiteralNumber>         // Indexes walk the type hierarchy to the desired depth, potentially down to component granularity. All indexes must be in bounds.
 }
 
 instruction! { OpCopyObject, 4, 4,
@@ -2728,8 +2528,15 @@ instruction! { OpLogicalOr, 5, 5,
     operand1: Id, operand2: Id           // Operand 1 and Operand 2 must both be scalars or vectors of Boolean type.
 }
 
-instruction! { OpLogicalXor, 5, 5,
 // Result is true if exactly one of Operand 1 or Operand 2 is true. Result is false if Operand 1 and Operand 2 have the same value.
+instruction! { OpLogicalNotEqual, 5, 5,
+    result_type: Id,         // Must be a scalar or vector of Boolean type, with the same number of components as the operands. Results are computed per component. The operands' types and Result Type must all have the same number of components.
+    result: Id,
+    operand1: Id, operand2: Id           // Operand 1 and Operand 2 must both be scalars or vectors of Boolean type.
+}
+
+// ==
+instruction! { OpLogicalEqual, 5, 5,
     result_type: Id,         // Must be a scalar or vector of Boolean type, with the same number of components as the operands. Results are computed per component. The operands' types and Result Type must all have the same number of components.
     result: Id,
     operand1: Id, operand2: Id           // Operand 1 and Operand 2 must both be scalars or vectors of Boolean type.
@@ -2740,6 +2547,14 @@ instruction! { OpLogicalAnd, 5, 5,
     result_type: Id,         // Must be a scalar or vector of Boolean type, with the same number of components as the operands. Results are computed per component. The operands' types and Result Type must all have the same number of components.
     result: Id,
     operand1: Id, operand2: Id           // Operand 1 and Operand 2 must both be scalars or vectors of Boolean type.
+}
+
+instruction! { OpLogicalNot, 4, 4,
+    // Must be a scalar or vector of Boolean type, with the same number of components as the operands. Results are computed per component. The operands' types and Result Type must all have the same number of components.
+    result_type: Id,
+    // Result is true if Operand is false. Result is false if Operand is true.
+    result: Id,
+    operand: Id
 }
 
 instruction! { OpSelect, 6, 6,
@@ -3087,7 +2902,7 @@ instruction! { OpLabel, 3, 3,
 //
 // This instruction must be the last instruction in a block.
 instruction! { OpBranch, 3, 3,
-    targetLabel: Id       // Must be the Result <id> of an OpLabel instruction in the current function.
+    target_label: Id       // Must be the Result <id> of an OpLabel instruction in the current function.
 }
 
 // If Condition is true, branch to True Label, otherwise branch to False Label.
@@ -3162,16 +2977,6 @@ instruction! { OpLifetimeStop, 3, 3,
 ///---------------------------
 ///3.27.17 Atomic Instructions
 ///---------------------------
-
-// Initialize atomic memory to Value. This is not done atomically with
-// respect to anything.
-//
-// The type of Value and the type pointed to by Pointer must be the
-// same type.
-instruction! { OpAtomicInit, 3, 3,
-    pointer: Id,
-    value: Id
-}
 
 instruction! { OpAtomicLoad, 6, 6,
 // Atomically load through Pointer using the given Semantics. All subparts of the value that is loaded will be
@@ -3533,11 +3338,11 @@ instruction! { OpMemoryBarrier, 3, 3,
 ///3.27.20 Group Instructions
 ///--------------------------
 
-instruction! { OpAsyncGroupCopy, 9, 9,
+instruction! { OpGroupAsyncCopy, 9, 9,
 // Perform an asynchronous group copy of Num Elements elements from Source to Destination. The
 // asynchronous copy is performed by all work-items in a group.
 //
-// Returns an event object that can be used by OpWaitGroupEvents to wait for the copy to finish.
+// Returns an event object that can be used by OpGroupWaitEvents to wait for the copy to finish.
 //
 // Event must be OpTypeEvent.
 //
@@ -3573,8 +3378,8 @@ instruction! { OpAsyncGroupCopy, 9, 9,
     event: Id
 }
 
-instruction! { OpWaitGroupEvents, 6, 6,
-// Wait for events generated by OpAsyncGroupCopy operations to complete. The event objects pointed
+instruction! { OpGroupWaitEvents, 6, 6,
+// Wait for events generated by OpGroupAsyncCopy operations to complete. The event objects pointed
 // by Events List will be released after the wait is performed.
 //
 // Capability: Kernel
@@ -3797,7 +3602,7 @@ instruction! { OpEnqueueKernel, 13, 65535,
     param: Id,              // the first parameter of the function specified by Invoke and must be OpTypePointer to 8 bit OpTypeInt.
     param_size: Id,          // the size in bytes of the memory pointed by Param and must be a 32 bit OpTypeInt treated as unsigned int.
     param_align: Id,         // the alignment of Param.
-    local_size: [Id; 1]       // (optional) list of 32 bit OpTypeInt values which are treated as unsigned integers. Every Local Size specifies the size in bytes of the OpTypePointer with WorkgroupLocal of Invoke. The number of Local Size operands must match the signature of Invoke OpTypeFunction
+    local_size: UnsizedArray<Id>       // (optional) list of 32 bit OpTypeInt values which are treated as unsigned integers. Every Local Size specifies the size in bytes of the OpTypePointer with WorkgroupLocal of Invoke. The number of Local Size operands must match the signature of Invoke OpTypeFunction
 }
 
 // Returns the number of subgroups in each workgroup of the dispatch (except for the last in cases where the global size does not divide cleanly into work-groups) given the combination of the passed NDRange descriptor specified by ND Range and the function specified by Invoke.

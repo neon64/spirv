@@ -70,8 +70,6 @@ impl<T: fmt::Debug> Index<usize> for UnsizedArray<T> {
     type Output = T;
 
     fn index<'a>(&'a self, index: usize) -> &'a T {
-        println!("indexing into {}", index * mem::size_of::<T>());
-
         unsafe { &*(self as *const UnsizedArray<T> as *const _).offset(index as isize) }
     }
 }

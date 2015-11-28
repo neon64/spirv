@@ -54,7 +54,7 @@ impl<'a> Iterator for InstructionIterator<'a> {
         // check for malformed header
         if instruction_header.word_count == 0 {
             return Some(Err(SpirvError::WordCountIsZero));
-        } else if instruction_header.opcode as u16 >= Op::OpLastValue as u16 {
+        } else if instruction_header.opcode as u16 >= Op::Count as u16 {
             return Some(Err(SpirvError::InvalidOpcode));
         }
 
