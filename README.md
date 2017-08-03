@@ -1,6 +1,6 @@
 # SPIR-V Parser for Rust
 
-** Abandoned **: After about a year of not maintaining this crate, I think has become increasingly out-of-touch with the current spec, and also somewhat limited in features... I also realise that the name `spirv` on crates.io sounds rather canonical, which could mislead people looking for a polished, high-quality SPIRV toolset (tldr: you probably want [rspirv](https://github.com/google/rspirv). ** Therefore please let me know if you want to use the `spirv` crate name... I'll try and find out some way to transfer ownership. **
+**Abandoned**: After about a year of not maintaining this crate, I think has become increasingly out-of-touch with the current spec, and also somewhat limited in features... I also realise that the name `spirv` on crates.io sounds rather canonical, which could mislead people looking for a polished, high-quality SPIRV toolset (tldr: you probably want [rspirv](https://github.com/google/rspirv). **Therefore please let me know if you want to use the `spirv` crate name... I'll try and find out some way to transfer ownership.**
 
 This project contains an experimental SPIR-V parser.
 Once provided with a vector of bytes, it constructs a read-only in-memory representation of the SPIR-V module.
